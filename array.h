@@ -15,7 +15,6 @@ typedef struct Array {
 
 	// add value to array. pval is an address of value to be copied to the array
 	void  (*add) (struct Array *self, void *pval);
-	// 
 	void* (*get) (struct Array *self, size_t i);
 	// sets value of array. value on pval address will be copied
 	void  (*set) (struct Array *self, size_t i, void *pval);
@@ -25,6 +24,10 @@ typedef struct Array {
 
 static inline void
 array_release(Array **pself) {
+	if (NULL == *pself) {
+		fprintf(stderr, "Trying to release NULL pointer (array)\n");
+		exit(EXIT_FAILURE);
+	}
 	free((*pself)->data);
 	free(*pself);
 	*pself = NULL;
@@ -33,7 +36,7 @@ array_release(Array **pself) {
 static inline void
 array_set(Array *self, size_t i, void *pval) {
 	if (i >= self->len) {
-		printf("index out of bounds (i=%ld array.len=%ld)\n", i, self->len);
+		fprintf(stderr, "index out of bounds (i=%ld array.len=%ld)\n", i, self->len);
 		exit(EXIT_FAILURE);
 	}
 
@@ -53,6 +56,10 @@ array_add(Array *self, void *pval) {
 
 static inline void*
 array_get(Array *self, size_t i) {
+	if (i >= self->len) {
+		printf("index out of bounds (i=%ld array.len=%ld)\n", i, self->len);
+		exit(EXIT_FAILURE);
+	}
 	return self->data + self->elem_size * i;
 }
 
