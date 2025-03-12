@@ -14,10 +14,12 @@ typedef struct Array {
 	size_t elem_size;
 
 	// add value to array. pval is an address of value to be copied to the array
-	void  (*add) (struct Array *self, void *pval);
-	void* (*get) (struct Array *self, size_t i);
+	void  (*add)     (struct Array *self, void *pval);
+	void* (*get)     (struct Array *self, size_t i);
 	// sets value of array. value on pval address will be copied
-	void  (*set) (struct Array *self, size_t i, void *pval);
+	void  (*set)     (struct Array *self, size_t i, void *pval);
+	// fast remove without preserving order - element is just replaced by last one
+	void  (*fremove) (struct Array *self, size_t i);
 
 	void  (*release) (struct Array **pself);
 } Array;
@@ -33,7 +35,7 @@ array_release(Array **pself) {
 	*pself = NULL;
 }
 
-static inline void
+static void
 array_set(Array *self, size_t i, void *pval) {
 	if (i >= self->len) {
 		fprintf(stderr, "index out of bounds (i=%ld array.len=%ld)\n", i, self->len);
@@ -54,13 +56,29 @@ array_add(Array *self, void *pval) {
 	array_set(self, self->len - 1, pval);
 }
 
-static inline void*
+static void*
 array_get(Array *self, size_t i) {
 	if (i >= self->len) {
 		printf("index out of bounds (i=%ld array.len=%ld)\n", i, self->len);
 		exit(EXIT_FAILURE);
 	}
 	return self->data + self->elem_size * i;
+}
+
+static void
+array_fast_remove(Array *self, size_t i) {
+	if (i >= self->len) {
+		fprintf(stderr, "index out of bounds (i=%ld array.len=%ld)\n", i, self->len);
+		exit(EXIT_FAILURE);
+	}
+
+	if (self->len != 1) {
+		memcpy(self->data + (i * self->elem_size),
+			   self->data + ((self->len - 1) * self->elem_size),
+			   self->elem_size);
+	}
+
+	self->len--;
 }
 
 static Array*
@@ -74,6 +92,7 @@ form_array(size_t elem_size) {
 	arr->add = array_add;
 	arr->set = array_set;
 	arr->get = array_get;
+	arr->fremove = array_fast_remove;
 	arr->release = array_release;
 
 	return arr;
