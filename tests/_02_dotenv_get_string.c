@@ -1,5 +1,6 @@
 #include <string.h>
 #include "../parsers/dotenv.h"
+#include "../testing/assert.h"
 
 int main() {
 	char *buffer = "Zero=TheOne\n"
@@ -8,19 +9,13 @@ int main() {
 	Dotenv *dotenv = parse_dotenv(buffer);
 
 	const char *val = dotenv->get_string(dotenv, "Zero");
+	assert_str_equals(val, "TheOne");
 
-	if (strcmp(val, "TheOne") != 0) {
-		fprintf(stderr, "actual=%s expected=TheOne\n", val);
-	}
 	val = dotenv->get_string(dotenv, "Architect");
+	assert_str_equals(val, "Galatea");
 
-	if (strcmp(val, "Galatea") != 0) {
-		fprintf(stderr, "actual=%s expected=Galatea\n", val);
-	}
 	val = dotenv->get_string(dotenv, "Simulation");
+	assert_str_equals(val, "Emulation");
 
-	if (strcmp(val, "Emulation") != 0) {
-		fprintf(stderr, "actual=%s expected=Emulation\n", val);
-	}
 	return 0;
 }

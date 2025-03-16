@@ -1,6 +1,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include "../parsers/dotenv.h"
+#include "../testing/assert.h"
 
 int main() {
 	char *buffer = "Existence=true\n"
@@ -8,14 +9,9 @@ int main() {
 	Dotenv *dotenv = parse_dotenv(buffer);
 
 	bool value = dotenv->get_bool(dotenv, "Existence");
-	if (value != true) {
-		fprintf(stderr, "Existence: actual=false expected=true\n");
-		return -1;
-	}
+	assert_bool_equals(value, true);
+
 	value = dotenv->get_bool(dotenv, "NonExistence");
-	if (value != false) {
-		fprintf(stderr, "NonExistence: actual=true expected=false\n");
-		return -1;
-	}
+	assert_bool_equals(value, false);
 	return 0;
 }
