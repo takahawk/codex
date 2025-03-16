@@ -1,18 +1,21 @@
 #ifndef PARSERS_DOTENV_H_
 #define PARSERS_DOTENV_H_
 #include <ctype.h>
+#include <errno.h>
 #include <stdbool.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "../array.h"
 
 typedef struct Dotenv {
-	// TODO: probably better to use tree... when we implement one in codex
+	// TODO: probably better to use trees... when we implement one in codex
 	Array/*char**/ *keys;
 	Array/*char**/ *values;
 
 	const char* (*get_string) (struct Dotenv *self, const char *key);
+	uint16_t    (*get_uint16) (struct Dotenv *self, const char *key);
 	bool        (*get_bool)   (struct Dotenv *self, const char *key);
 
 	void        (*release)    (struct Dotenv **pself);
@@ -42,6 +45,26 @@ dotenv_get_string(Dotenv *self, const char *key) {
 
 	fprintf(stderr, "key not found \"%s\"\n", key);
 	exit(EXIT_FAILURE);
+}
+
+static uint16_t
+dotenv_get_uint16(Dotenv *self, const char *key) {
+	const char *strval = self->get_string(self, key);	
+	char *endptr;
+
+	long val = strtol(strval, &endptr, 10);
+
+	if (*endptr != '\0') {
+		fprintf(stderr, "value is not a number: %s\n", strval);
+		exit(EXIT_FAILURE);
+	}
+
+	if (errno == ERANGE || val > 65535  || val < 0) {
+		fprintf(stderr, "value is out of range (uint16 <- %d...%d): %s", 0, 65535, strval);
+		exit(EXIT_FAILURE);
+	}
+
+	return (uint16_t) val;
 }
 
 static bool
@@ -126,9 +149,10 @@ parse_dotenv(char *buffer) {
 	env->keys = keys;
 	env->values = values;
 
+	env->get_uint16 = dotenv_get_uint16;
+	env->get_string = dotenv_get_string;
 	env->get_bool = dotenv_get_bool;
 	env->release = dotenv_release;
-	env->get_string = dotenv_get_string;
 	return env;
 }
 
