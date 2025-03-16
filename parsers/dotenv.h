@@ -12,9 +12,10 @@ typedef struct Dotenv {
 	Array/*char**/ *keys;
 	Array/*char**/ *values;
 
-	bool (*get_bool) (struct Dotenv *self, const char *key);
+	const char* (*get_string) (struct Dotenv *self, const char *key);
+	bool        (*get_bool)   (struct Dotenv *self, const char *key);
 
-	void (*release)  (struct Dotenv **pself);
+	void        (*release)    (struct Dotenv **pself);
 } Dotenv;
 
 static void
@@ -28,27 +29,34 @@ dotenv_release(Dotenv **pself) {
 	*pself = NULL;
 }
 
-static bool
-dotenv_get_bool(Dotenv *self, const char *key) {
+static const char*
+dotenv_get_string(Dotenv *self, const char *key) {
 	Array *keys = self->keys;
 	for (int i = 0; i < keys->len; ++i) {
 		char *dotenv_key = *(char **) keys->get(keys, i);
 		if (strcmp(key, dotenv_key) == 0) {
-			char *strval = *(char **) self->values->get(self->values, i);
-			if (strcmp(strval, "true") == 0)
-				return true;
-			if (strcmp(strval, "false") == 0)
-				return false;
-
-			// not a bool value
-			fprintf(stderr, "\"%s\" is not a bool value (%s=%s)\n", strval, key, strval);
-			exit(EXIT_FAILURE);
+			const char *strval = *(char **) self->values->get(self->values, i);
+			return strval;
 		}
 	}
 
 	fprintf(stderr, "key not found \"%s\"\n", key);
 	exit(EXIT_FAILURE);
 }
+
+static bool
+dotenv_get_bool(Dotenv *self, const char *key) {
+	const char *strval = self->get_string(self, key);
+	if (strcmp(strval, "true") == 0)
+		return true;
+	if (strcmp(strval, "false") == 0)
+		return false;
+
+	// not a bool value
+	fprintf(stderr, "\"%s\" is not a bool value (%s=%s)\n", strval, key, strval);
+	exit(EXIT_FAILURE);
+}
+
 
 static Dotenv*
 parse_dotenv(char *buffer) {
@@ -120,6 +128,7 @@ parse_dotenv(char *buffer) {
 
 	env->get_bool = dotenv_get_bool;
 	env->release = dotenv_release;
+	env->get_string = dotenv_get_string;
 	return env;
 }
 
