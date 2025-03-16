@@ -7,8 +7,8 @@
 #include "../array.h"
 
 typedef struct Dotenv {
-	Array/*char**/ keys;
-	Array/*char**/ values;
+	Array/*char**/ *keys;
+	Array/*char**/ *values;
 
 	void (*release) (struct Dotenv **pself);
 } Dotenv;
@@ -39,8 +39,9 @@ parse_dotenv(char *buffer) {
 	Array *values = form_array(sizeof(char*));
 	char c;
 
+	int i = 0;
 	int j = 0;
-	for (int i = 0; (c = buffer[i]) != '\0'; ++i) {
+	for (; (c = buffer[i]) != '\0'; ++i) {
 		switch (state) {
 		case STATE_KEY:
 			if ('=' == c) {
@@ -54,7 +55,7 @@ parse_dotenv(char *buffer) {
 				fprintf(stderr, "unexpected newline (index=%d)", i);
 				exit(EXIT_FAILURE);
 			} else if (isspace(c)) {
-				fprintf(stderr, "spaces (index=%d) are not allowed for Proxima .env files", c, i);
+				fprintf(stderr, "spaces (index=%d) are not allowed for Proxima .env files", i);
 				exit(EXIT_FAILURE);
 			} else if (!isalnum(c)) {
 				fprintf(stderr, "characted %c (index=%d) is not allowed for Proxima .env files", c, i);
@@ -70,7 +71,7 @@ parse_dotenv(char *buffer) {
 				values->add(values, &newval);
 				state = STATE_KEY;
 			} else if (isspace(c)) {
-				fprintf(stderr, "spaces (index=%d) are not allowed for Proxima .env files", c, i);
+				fprintf(stderr, "spaces (index=%d) are not allowed for Proxima .env files", i);
 				exit(EXIT_FAILURE);
 			} else if (!isalnum(c)) {
 				fprintf(stderr, "characted %c (index=%d) is not allowed for Proxima .env files as part of value", c, i);
@@ -78,6 +79,12 @@ parse_dotenv(char *buffer) {
 			}
 			break;
 		}
+	}
+	if (STATE_VALUE == state) {
+		char *newval = malloc(i - j + 1);
+		memcpy(newval, buffer + j, i - j);
+		newval[i - j] = '\0';
+		values->add(values, &newval);
 	}
 
 	Dotenv *env = malloc(sizeof(Dotenv));
