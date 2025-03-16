@@ -1,7 +1,7 @@
 #!/bin/sh
 
 CC=${CC:=gcc}
-SRCS=""
+SRCS=$(find . -type f -name '*.c')
 TESTS=tests/*.c
 
 for test in $TESTS; do
