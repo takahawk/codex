@@ -1,16 +1,20 @@
 #ifndef PARSERS_DOTENV_H_
 #define PARSERS_DOTENV_H_
 #include <ctype.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "../array.h"
 
 typedef struct Dotenv {
+	// TODO: probably better to use tree... when we implement one in codex
 	Array/*char**/ *keys;
 	Array/*char**/ *values;
 
-	void (*release) (struct Dotenv **pself);
+	bool (*get_bool) (struct Dotenv *self, const char *key);
+
+	void (*release)  (struct Dotenv **pself);
 } Dotenv;
 
 static void
@@ -24,16 +28,39 @@ dotenv_release(Dotenv **pself) {
 	*pself = NULL;
 }
 
+static bool
+dotenv_get_bool(Dotenv *self, const char *key) {
+	Array *keys = self->keys;
+	for (int i = 0; i < keys->len; ++i) {
+		char *dotenv_key = *(char **) keys->get(keys, i);
+		if (strcmp(key, dotenv_key) == 0) {
+			char *strval = *(char **) self->values->get(self->values, i);
+			if (strcmp(strval, "true") == 0)
+				return true;
+			if (strcmp(strval, "false") == 0)
+				return false;
+
+			// not a bool value
+			fprintf(stderr, "\"%s\" is not a bool value (%s=%s)\n", strval, key, strval);
+			exit(EXIT_FAILURE);
+		}
+	}
+
+	fprintf(stderr, "key not found \"%s\"\n", key);
+	exit(EXIT_FAILURE);
+}
+
 static Dotenv*
 parse_dotenv(char *buffer) {
 	// TODO: quotes
 	// TODO: comments
 	// TODO: whitespace
+	// TODO: check for existing keys
 	// yeah... now we just want it dead simple
 	enum {
 		STATE_KEY, 
 		STATE_VALUE
-	} state;
+	} state = STATE_KEY;
 
 	Array *keys = form_array(sizeof(char*));
 	Array *values = form_array(sizeof(char*));
@@ -91,6 +118,7 @@ parse_dotenv(char *buffer) {
 	env->keys = keys;
 	env->values = values;
 
+	env->get_bool = dotenv_get_bool;
 	env->release = dotenv_release;
 	return env;
 }
