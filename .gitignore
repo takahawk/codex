@@ -1,3 +1,2 @@
+build
 tests/*.bin
-*.o
-libcodex.a
