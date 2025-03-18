@@ -79,21 +79,25 @@ array_sort(Array* self, int (*compar) (const void *, const void *)) {
 	qsort(self->data, self->len, self->elem_size, compar);
 }
 
+const Array ARRAY_PROTOTYPE = {
+	.add = array_add,
+	.set = array_set,
+	.get = array_get,
+	.fremove = array_fast_remove,
+	.equals = array_equals,
+	.sort = array_sort,
+	.release = array_release
+};
+
 Array*
 form_array(size_t elem_size) {
 	Array *arr = malloc(sizeof(Array));
+	*arr = ARRAY_PROTOTYPE;
+
 	arr->elem_size = elem_size;
 	arr->len = 0;
 	arr->cap = ARRAY_BASE_CAP;
 	arr->data = malloc(elem_size * arr->cap);
-
-	arr->add = array_add;
-	arr->set = array_set;
-	arr->get = array_get;
-	arr->fremove = array_fast_remove;
-	arr->equals = array_equals;
-	arr->sort = array_sort;
-	arr->release = array_release;
 
 	return arr;
 }

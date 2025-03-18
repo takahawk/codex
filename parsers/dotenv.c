@@ -66,6 +66,13 @@ dotenv_get_bool(Dotenv *self, const char *key) {
 }
 
 
+const Dotenv DOTENV_PROTOTYPE = {
+	.get_string = dotenv_get_string,
+	.get_uint16 = dotenv_get_uint16,
+	.get_bool = dotenv_get_bool,
+	.release = dotenv_release 
+}
+
 Dotenv*
 parse_dotenv(const char *buffer) {
 	// TODO: quotes
@@ -131,12 +138,9 @@ parse_dotenv(const char *buffer) {
 	}
 
 	Dotenv *env = malloc(sizeof(Dotenv));
+	*env = DOTENV_PROTOTYPE;
 	env->keys = keys;
 	env->values = values;
 
-	env->get_string = dotenv_get_string;
-	env->get_uint16 = dotenv_get_uint16;
-	env->get_bool = dotenv_get_bool;
-	env->release = dotenv_release;
 	return env;
 }

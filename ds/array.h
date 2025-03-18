@@ -1,5 +1,5 @@
-#ifndef ARRAY_H_
-#define ARRAY_H_
+#ifndef CODEX_ARRAY_H_
+#define CODEX_ARRAY_H_
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -26,6 +26,7 @@ typedef struct Array {
 	void  (*release) (struct Array **pself);
 } Array;
 
+extern const Array ARRAY_PROTOTYPE;
 Array* form_array(size_t elem_size);
 
 #endif
