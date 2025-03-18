@@ -6,7 +6,6 @@ LIBS="-lcodex"
 TESTS=tests/*.c
 INCLUDE="-I./"
 
-set -x
 for test in $TESTS; do
 	echo "Running test $test..."
 	testbin="$test.bin"
