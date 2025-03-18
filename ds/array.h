@@ -1,12 +1,9 @@
 #ifndef ARRAY_H_
 #define ARRAY_H_
 
+#include <stdbool.h>
+#include <stddef.h>
 #include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-
-#define ARRAY_BASE_CAP 10
-#define CAP_MULTIPLIER 2
 
 typedef struct Array {
 	uint8_t *data;
@@ -21,6 +18,10 @@ typedef struct Array {
 	void  (*set)     (struct Array *self, size_t i, void *pval);
 	// fast remove without preserving order - element is just replaced by last one
 	void  (*fremove) (struct Array *self, size_t i);
+
+	bool  (*equals)  (struct Array *self, struct Array *other);
+
+	void  (*sort)    (struct Array *self, int (*compar) (const void*, const void*));
 
 	void  (*release) (struct Array **pself);
 } Array;

@@ -64,6 +64,21 @@ array_fast_remove(Array *self, size_t i) {
 	self->len--;
 }
 
+static bool
+array_equals(Array *self, Array *other) {
+	if (self->elem_size != other->elem_size)
+		return false;
+	if (self->len != other->len)
+		return false;
+
+	return memcmp(self->data, other->data, self->elem_size * self->len) == 0;
+}
+
+static void
+array_sort(Array* self, int (*compar) (const void *, const void *)) {
+	qsort(self->data, self->len, self->elem_size, compar);
+}
+
 Array*
 form_array(size_t elem_size) {
 	Array *arr = malloc(sizeof(Array));
@@ -76,6 +91,8 @@ form_array(size_t elem_size) {
 	arr->set = array_set;
 	arr->get = array_get;
 	arr->fremove = array_fast_remove;
+	arr->equals = array_equals;
+	arr->sort = array_sort;
 	arr->release = array_release;
 
 	return arr;

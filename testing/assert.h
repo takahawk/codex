@@ -1,6 +1,8 @@
 #ifndef CODEX_TESTING_ASSERT_H_
 #define CODEX_TESTING_ASSERT_H_
+#include <stdio.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 
