@@ -5,6 +5,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#include "encoding/serializer.h"
+
 typedef struct Array {
 	uint8_t *data;
 	size_t len;
@@ -24,6 +26,9 @@ typedef struct Array {
 	void  (*sort)    (struct Array *self, int (*compar) (const void*, const void*));
 
 	void  (*release) (struct Array **pself);
+
+
+	Serializer* (*form_serializer) (Serializer *item_serializer);
 } Array;
 
 extern const Array ARRAY_PROTOTYPE;

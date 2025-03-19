@@ -71,7 +71,7 @@ const Dotenv DOTENV_PROTOTYPE = {
 	.get_uint16 = dotenv_get_uint16,
 	.get_bool = dotenv_get_bool,
 	.release = dotenv_release 
-}
+};
 
 Dotenv*
 parse_dotenv(const char *buffer) {

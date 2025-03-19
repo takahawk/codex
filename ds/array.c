@@ -79,6 +79,7 @@ array_sort(Array* self, int (*compar) (const void *, const void *)) {
 	qsort(self->data, self->len, self->elem_size, compar);
 }
 
+#include "array_serializer_internal.h"
 const Array ARRAY_PROTOTYPE = {
 	.add = array_add,
 	.set = array_set,
@@ -86,7 +87,8 @@ const Array ARRAY_PROTOTYPE = {
 	.fremove = array_fast_remove,
 	.equals = array_equals,
 	.sort = array_sort,
-	.release = array_release
+	.release = array_release,
+	.form_serializer = form_array_serializer
 };
 
 Array*
