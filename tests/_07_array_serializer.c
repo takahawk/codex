@@ -103,6 +103,8 @@ int main() {
 		assert_str_equals(et->emulacrum, et2->emulacrum);
 	}
 
+	s->release(&s);
+
 	return 0;
 }
 

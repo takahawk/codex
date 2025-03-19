@@ -99,16 +99,28 @@ array_serializer_deserialize_from(Serializer *serializer, uint8_t *buffer, void 
 	return size;
 }
 
+static void
+array_serializer_release(Serializer **pself) {
+	free((*pself)->ctx);
+	free(*pself);
+	*pself = NULL;
+}
+
+const Serializer ARRAY_SERIALIZER_PROTOTYPE = {
+	.estimate_size = array_serializer_estimate_size,
+	.serialize_to = array_serializer_serialize_to,
+	.deserialize_from = array_serializer_deserialize_from,
+	.release = array_serializer_release
+};
+
 static Serializer*
 form_array_serializer(Serializer *item_serializer) {
 	SerializerCtx *ctx = malloc(sizeof(SerializerCtx));
 	ctx->item_serializer = item_serializer;
 
 	Serializer *serializer = malloc(sizeof(Serializer));
+	*serializer = ARRAY_SERIALIZER_PROTOTYPE;
 	serializer->ctx = ctx;
-	serializer->estimate_size = array_serializer_estimate_size;
-	serializer->serialize_to = array_serializer_serialize_to;
-	serializer->deserialize_from = array_serializer_deserialize_from;
 
 	return serializer;
 }
