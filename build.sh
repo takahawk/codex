@@ -15,7 +15,7 @@ mkdir -p build/parsers
 
 for src in $SRCS; do
 	obj="build/${src%.c}.o"
-	gcc -c "$src" -o "$obj" $INCLUDE
+	gcc -g -c "$src" -o "$obj" $INCLUDE
 	OBJS="$OBJS $obj"
 done
 

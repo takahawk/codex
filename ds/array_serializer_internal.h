@@ -94,6 +94,8 @@ array_serializer_deserialize_from(Serializer *serializer, uint8_t *buffer, void 
 		size += item_size;
 	}
 
+	*entity = array;
+
 	return size;
 }
 
@@ -103,6 +105,7 @@ form_array_serializer(Serializer *item_serializer) {
 	ctx->item_serializer = item_serializer;
 
 	Serializer *serializer = malloc(sizeof(Serializer));
+	serializer->ctx = ctx;
 	serializer->estimate_size = array_serializer_estimate_size;
 	serializer->serialize_to = array_serializer_serialize_to;
 	serializer->deserialize_from = array_serializer_deserialize_from;
