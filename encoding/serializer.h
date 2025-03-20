@@ -33,6 +33,16 @@ serialize_string(char *s, uint8_t *buffer) {
 }
 
 static size_t
+estimate_serialize_size_string(char *s) {
+	uint64_t len = strlen(s) + 1;
+
+	size_t size = sizeof(len);
+	size += len;
+
+	return size;
+}
+
+static size_t
 deserialize_string(uint8_t *buffer, char **s) {
 	uint8_t *p = buffer;
 	size_t size = 0;
