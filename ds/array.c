@@ -9,9 +9,22 @@
 
 static inline void
 array_release(Array **pself) {
-	if (NULL == *pself) {
+	Array *self = *pself;
+	if (NULL == self) {
 		fprintf(stderr, "Trying to release NULL pointer (array)\n");
 		exit(EXIT_FAILURE);
+	}
+
+	if (NULL != self->item_release) {
+		size_t len = self->len;
+		size_t elem_size = self->elem_size;
+		void *p = self->data;
+
+		void *maxp = p + (len * elem_size);
+		for (; p < maxp; p += elem_size) {
+			void *item = p;
+			self->item_release(&item);
+		}
 	}
 	free((*pself)->data);
 	free(*pself);
@@ -81,6 +94,8 @@ array_sort(Array* self, int (*compar) (const void *, const void *)) {
 
 #include "array_serializer_internal.h"
 const Array ARRAY_PROTOTYPE = {
+	.item_release = NULL,
+
 	.add = array_add,
 	.set = array_set,
 	.get = array_get,
@@ -100,6 +115,6 @@ form_array(size_t elem_size) {
 	arr->len = 0;
 	arr->cap = ARRAY_BASE_CAP;
 	arr->data = malloc(elem_size * arr->cap);
-
+	
 	return arr;
 }

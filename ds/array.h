@@ -7,11 +7,15 @@
 
 #include "encoding/serializer.h"
 
+typedef void (*ArrayItemReleaseCb) (void **item_ptr);
+
 typedef struct Array {
 	uint8_t *data;
 	size_t len;
 	size_t cap;
 	size_t elem_size;
+	// just set if needed. defaults (NULL) is no item release at all
+	ArrayItemReleaseCb item_release;
 
 	// add value to array. pval is an address of value to be copied to the array
 	void  (*add)     (struct Array *self, void *pval);
@@ -27,11 +31,12 @@ typedef struct Array {
 
 	void  (*release) (struct Array **pself);
 
-
 	Serializer* (*form_serializer) (Serializer *item_serializer);
 } Array;
 
 extern const Array ARRAY_PROTOTYPE;
+
+// just pass NULL as item_release if you do not need that 
 Array* form_array(size_t elem_size);
 
 #endif
