@@ -3,9 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-Allocator form_std_allocator();
-
-void*
+static void*
 std_allocator_alloc(Allocator *self, size_t size) {
 	void* p = malloc(size);
 
@@ -17,7 +15,7 @@ std_allocator_alloc(Allocator *self, size_t size) {
 	return p;
 }
 
-void*
+static void*
 std_allocator_realloc(Allocator *self, void *p, size_t size) {
 	p = realloc(p, size);
 
@@ -29,7 +27,7 @@ std_allocator_realloc(Allocator *self, void *p, size_t size) {
 	return p;
 }
 
-void
+static void
 std_allocator_free(Allocator *self, void *p) {
 	if (NULL == p) {
 		perror("attempt to release NULL pointer\n");
