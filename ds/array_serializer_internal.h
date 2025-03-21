@@ -57,6 +57,7 @@ static size_t
 array_serializer_deserialize_from(Serializer *serializer, uint8_t *buffer, void **entity) {
 	SerializerCtx *ctx = (SerializerCtx *) serializer->ctx;
 	Serializer *is = ctx->item_serializer;
+	Allocator *a = serializer->a;
 
 	uint8_t *p = buffer;
 	size_t size = 0;
@@ -83,7 +84,7 @@ array_serializer_deserialize_from(Serializer *serializer, uint8_t *buffer, void 
 		exit(EXIT_FAILURE);
 	}
 
-	Array *array = form_array(elem_size);
+	Array *array = form_array(a, elem_size);
 
 	for (size_t i = 0; i < len; ++i) {
 		void *item;
@@ -101,8 +102,9 @@ array_serializer_deserialize_from(Serializer *serializer, uint8_t *buffer, void 
 
 static void
 array_serializer_release(Serializer **pself) {
-	free((*pself)->ctx);
-	free(*pself);
+	Allocator *a = (*pself)->a;
+	a->free(a, (*pself)->ctx);
+	a->free(a, *pself);
 	*pself = NULL;
 }
 
@@ -114,13 +116,14 @@ const Serializer ARRAY_SERIALIZER_PROTOTYPE = {
 };
 
 static Serializer*
-form_array_serializer(Serializer *item_serializer) {
-	SerializerCtx *ctx = malloc(sizeof(SerializerCtx));
+form_array_serializer(Allocator *a, Serializer *item_serializer) {
+	SerializerCtx *ctx = a->alloc(a, sizeof(SerializerCtx));
 	ctx->item_serializer = item_serializer;
 
-	Serializer *serializer = malloc(sizeof(Serializer));
+	Serializer *serializer = a->alloc(a, sizeof(Serializer));
 	*serializer = ARRAY_SERIALIZER_PROTOTYPE;
 	serializer->ctx = ctx;
+	serializer->a = a;
 
 	return serializer;
 }

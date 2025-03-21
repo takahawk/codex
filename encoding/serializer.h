@@ -6,7 +6,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-/*interface*/ typedef struct Serializer {
+#include "allocators/allocator.h"
+
+typedef struct Serializer {
+	Allocator *a;
 	void *ctx;
 
 	size_t (*estimate_size)    (struct Serializer *self, void *entity);
@@ -43,7 +46,7 @@ estimate_serialize_size_string(char *s) {
 }
 
 static size_t
-deserialize_string(uint8_t *buffer, char **s) {
+deserialize_string(Allocator *a, uint8_t *buffer, char **s) {
 	uint8_t *p = buffer;
 	size_t size = 0;
 	uint64_t len;
@@ -52,7 +55,7 @@ deserialize_string(uint8_t *buffer, char **s) {
 	size += sizeof(len);
 
 	len = be64toh(len);
-	*s = malloc(len);
+	*s = a->alloc(a, len);
 	memcpy(*s, p, len);
 	size += len;
 

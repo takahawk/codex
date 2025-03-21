@@ -1,6 +1,8 @@
 #include "ds/array.h"
 #include "testing/assert.h"
 
+#include "allocators/allocator.h"
+
 typedef struct {
 	uint16_t number;
 	char *original;
@@ -8,18 +10,19 @@ typedef struct {
 
 } EmulacrumTarot;
 
-Array*/*EmulacrumTarot*/ form_array_1();
-Array*/*EmulacrumTarot*/ form_array_2();
-Array*/*int*/            form_array_3();
+Array*/*EmulacrumTarot*/ form_array_1(Allocator *a);
+Array*/*EmulacrumTarot*/ form_array_2(Allocator *a);
+Array*/*int*/            form_array_3(Allocator *a);
 
 
 int main() {
-	Array *a1 = form_array_1();
-	Array *a2 = form_array_2();
-	Array *a3 = form_array_3();
-	Array *a4 = form_array_1();
-	Array *a5 = form_array_2();
-	Array *a6 = form_array_3();
+	Allocator a = form_std_allocator();
+	Array *a1 = form_array_1(&a);
+	Array *a2 = form_array_2(&a);
+	Array *a3 = form_array_3(&a);
+	Array *a4 = form_array_1(&a);
+	Array *a5 = form_array_2(&a);
+	Array *a6 = form_array_3(&a);
 
 	assert_bool_equals(a1->equals(a1, a1), true);
 	assert_bool_equals(a1->equals(a1, a2), false);
@@ -47,8 +50,8 @@ int main() {
 }
 
 Array*/*EmulacrumTarot*/ 
-form_array_1() {
-	Array *a = form_array(sizeof(EmulacrumTarot));
+form_array_1(Allocator *all) {
+	Array *a = form_array(all, sizeof(EmulacrumTarot));
 
 	EmulacrumTarot entry = {
 		.number = 16,
@@ -75,8 +78,8 @@ form_array_1() {
 }
 
 Array*/*EmulacrumTarot*/ 
-form_array_2() {
-	Array *a = form_array(sizeof(EmulacrumTarot));
+form_array_2(Allocator *all) {
+	Array *a = form_array(all, sizeof(EmulacrumTarot));
 
 	EmulacrumTarot entry = {
 		.number = 14,
@@ -103,8 +106,8 @@ form_array_2() {
 }
 
 Array*/*int*/
-form_array_3() {
-	Array *a = form_array(sizeof(int));
+form_array_3(Allocator *all) {
+	Array *a = form_array(all, sizeof(int));
 
 	int entry = 0;
 	a->add(a, &entry);

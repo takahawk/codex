@@ -5,11 +5,13 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#include "allocators/allocator.h"
 #include "encoding/serializer.h"
 
 typedef void (*ArrayItemReleaseCb) (void **item_ptr);
 
 typedef struct Array {
+	Allocator *a;
 	uint8_t *data;
 	size_t len;
 	size_t cap;
@@ -31,12 +33,12 @@ typedef struct Array {
 
 	void  (*release) (struct Array **pself);
 
-	Serializer* (*form_serializer) (Serializer *item_serializer);
+	Serializer* (*form_serializer) (Allocator *a, Serializer *item_serializer);
 } Array;
 
 extern const Array ARRAY_PROTOTYPE;
 
 // just pass NULL as item_release if you do not need that 
-Array* form_array(size_t elem_size);
+Array* form_array(Allocator *a, size_t elem_size);
 
 #endif

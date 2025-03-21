@@ -1,12 +1,15 @@
 #include <string.h>
-#include "../parsers/dotenv.h"
-#include "../testing/assert.h"
+#include "allocators/allocator.h"
+#include "parsers/dotenv.h"
+#include "testing/assert.h"
+
 
 int main() {
+	Allocator a = form_std_allocator();
 	char *buffer = "Zero=TheOne\n"
 				   "Architect=Galatea\n"
 				   "Simulation=Emulation";
-	Dotenv *dotenv = parse_dotenv(buffer);
+	Dotenv *dotenv = parse_dotenv(&a, buffer);
 
 	Array *keys = dotenv->keys;
 	Array *values = dotenv->values;

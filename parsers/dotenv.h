@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#include "allocators/allocator.h"
 #include "../ds/array.h"
 
 typedef struct Dotenv {
@@ -17,5 +18,5 @@ typedef struct Dotenv {
 	void        (*release)    (struct Dotenv **pself);
 } Dotenv;
 
-Dotenv* parse_dotenv(const char *buffer);
+Dotenv* parse_dotenv(Allocator *a, const char *buffer);
 #endif

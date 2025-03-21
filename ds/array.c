@@ -10,6 +10,7 @@
 static inline void
 array_release(Array **pself) {
 	Array *self = *pself;
+	Allocator *a = self->a;
 	if (NULL == self) {
 		fprintf(stderr, "Trying to release NULL pointer (array)\n");
 		exit(EXIT_FAILURE);
@@ -26,8 +27,8 @@ array_release(Array **pself) {
 			self->item_release(&item);
 		}
 	}
-	free((*pself)->data);
-	free(*pself);
+	a->free(a, (*pself)->data);
+	a->free(a, *pself);
 	*pself = NULL;
 }
 
@@ -45,7 +46,7 @@ static void
 array_add(Array *self, void *pval) {
 	if (self->len == self->cap) {
 		self->cap *= CAP_MULTIPLIER;
-		self->data = realloc(self->data, self->elem_size * self->cap);
+		self->data = self->a->realloc(self->a, self->data, self->elem_size * self->cap);
 	}
 
 	self->len++;
@@ -107,14 +108,15 @@ const Array ARRAY_PROTOTYPE = {
 };
 
 Array*
-form_array(size_t elem_size) {
-	Array *arr = malloc(sizeof(Array));
+form_array(Allocator *a, size_t elem_size) {
+	Array *arr = a->alloc(a, sizeof(Array));
 	*arr = ARRAY_PROTOTYPE;
 
+	arr->a = a;
 	arr->elem_size = elem_size;
 	arr->len = 0;
 	arr->cap = ARRAY_BASE_CAP;
-	arr->data = malloc(elem_size * arr->cap);
+	arr->data = a->alloc(a, elem_size * arr->cap);
 	
 	return arr;
 }

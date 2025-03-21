@@ -3,9 +3,11 @@
 #include <stdbool.h>
 #include <string.h>
 
+#include "allocators/allocator.h"
 #include "testing/assert.h"
 
 bool is_item_release_called[5];
+
 
 static void
 item_release(int **pitem) {
@@ -14,8 +16,9 @@ item_release(int **pitem) {
 }
 
 int main() {
+	Allocator a = form_std_allocator();
 	bzero(is_item_release_called, sizeof(bool) * 5);
-	Array *arr = form_array(sizeof(int));
+	Array *arr = form_array(&a, sizeof(int));
 	int x1 = 0, x2 = 1, x3 = 2, x4 = 3, x5 = 4;
 	arr->add(arr, &x1);
 	arr->add(arr, &x2);

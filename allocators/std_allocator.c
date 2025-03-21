@@ -49,5 +49,6 @@ const Allocator STD_ALLOCATOR_PROTOTYPE = {
 
 Allocator
 form_std_allocator() {
-	return STD_ALLOCATOR_PROTOTYPE;
+	Allocator a = STD_ALLOCATOR_PROTOTYPE;
+	return a;
 }

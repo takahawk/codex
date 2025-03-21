@@ -4,6 +4,7 @@
 #include <endian.h>
 #include <string.h>
 
+#include "allocators/allocator.h"
 #include "testing/assert.h"
 
 typedef struct {
@@ -44,7 +45,7 @@ emulacrum_tarot_serializer_serialize_to(Serializer *s, void *entity, uint8_t *bu
 
 static size_t
 emulacrum_tarot_serializer_deserialize_from(Serializer *s, uint8_t *buffer, void **entity) {
-	EmulacrumTarot *et = malloc(sizeof(EmulacrumTarot));
+	EmulacrumTarot *et = s->a->alloc(s->a, sizeof(EmulacrumTarot));
 
 	size_t size = 0;
 	uint8_t *p = buffer;
@@ -53,11 +54,11 @@ emulacrum_tarot_serializer_deserialize_from(Serializer *s, uint8_t *buffer, void
 	p += sizeof(et->number);
 	size += sizeof(et->number);
 
-	size_t i = deserialize_string(p, &et->original);
+	size_t i = deserialize_string(s->a, p, &et->original);
 	p += i;
 	size += i;
 
-	i = deserialize_string(p, &et->emulacrum);
+	i = deserialize_string(s->a, p, &et->emulacrum);
 	p += i;
 	size += i;
 
@@ -66,8 +67,10 @@ emulacrum_tarot_serializer_deserialize_from(Serializer *s, uint8_t *buffer, void
 	return size;
 }
 
-Serializer *form_emulacrum_tarot_serializer() {
-	Serializer *s = malloc(sizeof(Serializer));
+Serializer *form_emulacrum_tarot_serializer(Allocator *all) {
+	Serializer *s = all->alloc(all, sizeof(Serializer));
+
+	s->a = all;
 
 	s->estimate_size = emulacrum_tarot_serializer_estimate_size;
 	s->serialize_to = emulacrum_tarot_serializer_serialize_to;
@@ -80,12 +83,13 @@ Serializer *form_emulacrum_tarot_serializer() {
 Array*/*EmulacrumTarot*/ form_test_array();
 
 int main() {
-	Array *arr = form_test_array();
-	Serializer *is = form_emulacrum_tarot_serializer();
-	Serializer *s = arr->form_serializer(is);
+	Allocator a = form_std_allocator();
+	Array *arr = form_test_array(&a);
+	Serializer *is = form_emulacrum_tarot_serializer(&a);
+	Serializer *s = arr->form_serializer(&a, is);
 
 	size_t size = s->estimate_size(s, arr);
-	uint8_t *buf = malloc(size);
+	uint8_t *buf = a.alloc(&a, size);
 
 	s->serialize_to(s, arr, buf);
 
@@ -109,8 +113,8 @@ int main() {
 }
 
 Array*/*EmulacrumTarot*/ 
-form_test_array() {
-	Array *a = form_array(sizeof(EmulacrumTarot));
+form_test_array(Allocator *all) {
+	Array *a = form_array(all, sizeof(EmulacrumTarot));
 
 	EmulacrumTarot entry = {
 		.number = 16,

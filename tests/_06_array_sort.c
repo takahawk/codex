@@ -4,6 +4,8 @@
 
 #include "testing/assert.h"
 
+#include "allocators/allocator.h"
+
 typedef struct {
 	uint16_t number;
 	char *original;
@@ -11,10 +13,10 @@ typedef struct {
 
 } EmulacrumTarot;
 
-Array*/*EmulacrumTarot*/ form_unsorted();
-Array*/*EmulacrumTarot*/ form_sorted_by_number();
-Array*/*EmulacrumTarot*/ form_sorted_by_original();
-Array*/*EmulacrumTarot*/ form_sorted_by_emulacrum();
+Array*/*EmulacrumTarot*/ form_unsorted(Allocator *all);
+Array*/*EmulacrumTarot*/ form_sorted_by_number(Allocator *all);
+Array*/*EmulacrumTarot*/ form_sorted_by_original(Allocator *all);
+Array*/*EmulacrumTarot*/ form_sorted_by_emulacrum(Allocator *all);
 
 static int
 compare_by_number(const void *a, const void *b) {
@@ -41,10 +43,11 @@ compare_by_emulacrum(const void *a, const void *b) {
 }
 
 int main() {
-	Array *arr = form_unsorted();
-	Array *by_number = form_sorted_by_number();
-	Array *by_original = form_sorted_by_original();
-	Array *by_emulacrum = form_sorted_by_emulacrum();
+	Allocator all = form_std_allocator();
+	Array *arr = form_unsorted(&all);
+	Array *by_number = form_sorted_by_number(&all);
+	Array *by_original = form_sorted_by_original(&all);
+	Array *by_emulacrum = form_sorted_by_emulacrum(&all);
 
 	assert_bool_equals(arr->equals(arr, by_number), false);
 	arr->sort(arr, compare_by_number);
@@ -62,8 +65,8 @@ int main() {
 }
 
 Array*/*EmulacrumTarot*/ 
-form_unsorted() {
-	Array *a = form_array(sizeof(EmulacrumTarot));
+form_unsorted(Allocator *all) {
+	Array *a = form_array(all, sizeof(EmulacrumTarot));
 
 	EmulacrumTarot entry = {
 		.number = 16,
@@ -111,8 +114,8 @@ form_unsorted() {
 }
 
 Array*/*EmulacrumTarot*/ 
-form_sorted_by_number() {
-	Array *a = form_array(sizeof(EmulacrumTarot));
+form_sorted_by_number(Allocator *all) {
+	Array *a = form_array(all, sizeof(EmulacrumTarot));
 
 	EmulacrumTarot entry = (EmulacrumTarot) {
 		.number = 0,
@@ -158,8 +161,8 @@ form_sorted_by_number() {
 	
 	return a;
 }
-Array*/*EmulacrumTarot*/ form_sorted_by_original() {
-	Array *a = form_array(sizeof(EmulacrumTarot));
+Array*/*EmulacrumTarot*/ form_sorted_by_original(Allocator *all) {
+	Array *a = form_array(all, sizeof(EmulacrumTarot));
 
 	EmulacrumTarot entry = (EmulacrumTarot) {
 		.number = 2,
@@ -207,8 +210,8 @@ Array*/*EmulacrumTarot*/ form_sorted_by_original() {
 }
 
 Array*/*EmulacrumTarot*/ 
-form_sorted_by_emulacrum() {
-	Array *a = form_array(sizeof(EmulacrumTarot));
+form_sorted_by_emulacrum(Allocator *all) {
+	Array *a = form_array(all, sizeof(EmulacrumTarot));
 
 	EmulacrumTarot entry = (EmulacrumTarot) {
 		.number = 17,

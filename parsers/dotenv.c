@@ -74,7 +74,7 @@ const Dotenv DOTENV_PROTOTYPE = {
 };
 
 Dotenv*
-parse_dotenv(const char *buffer) {
+parse_dotenv(Allocator *a, const char *buffer) {
 	// TODO: quotes
 	// TODO: comments
 	// TODO: whitespace
@@ -85,8 +85,8 @@ parse_dotenv(const char *buffer) {
 		STATE_VALUE
 	} state = STATE_KEY;
 
-	Array *keys = form_array(sizeof(char*));
-	Array *values = form_array(sizeof(char*));
+	Array *keys = form_array(a, sizeof(char*));
+	Array *values = form_array(a, sizeof(char*));
 	char c;
 
 	int i = 0;
@@ -95,7 +95,7 @@ parse_dotenv(const char *buffer) {
 		switch (state) {
 		case STATE_KEY:
 			if ('=' == c) {
-				char *newkey = malloc(i - j + 1);
+				char *newkey = a->alloc(a, i - j + 1);
 				memcpy(newkey, buffer + j, i - j);
 				newkey[i - j] = '\0';
 				j = i + 1;
@@ -114,7 +114,7 @@ parse_dotenv(const char *buffer) {
 			break;
 		case STATE_VALUE:
 			if ('\n' == c) {
-				char *newval = malloc(i - j + 1);
+				char *newval = a->alloc(a, i - j + 1);
 				memcpy(newval, buffer + j, i - j);
 				newval[i - j] = '\0';
 				j = i + 1;
@@ -131,13 +131,13 @@ parse_dotenv(const char *buffer) {
 		}
 	}
 	if (STATE_VALUE == state) {
-		char *newval = malloc(i - j + 1);
+		char *newval = a->alloc(a, i - j + 1);
 		memcpy(newval, buffer + j, i - j);
 		newval[i - j] = '\0';
 		values->add(values, &newval);
 	}
 
-	Dotenv *env = malloc(sizeof(Dotenv));
+	Dotenv *env = a->alloc(a, sizeof(Dotenv));
 	*env = DOTENV_PROTOTYPE;
 	env->keys = keys;
 	env->values = values;
