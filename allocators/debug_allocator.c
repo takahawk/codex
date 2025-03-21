@@ -3,6 +3,7 @@
 #include <execinfo.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "ds/array.h"
 
@@ -15,9 +16,9 @@ add_allocation_entry(Allocator *self, void *ptr, size_t size) {
 	DebugAllocationEntry entry = {
 		.ptr = ptr,
 		.size = size,
-		.stack = stack,
 		.stack_size = stack_size
 	};
+	memcpy(entry.stack, stack, sizeof(void*) * stack_size);
 
 	ctx->total_allocated += size;
 
@@ -91,12 +92,11 @@ const Allocator DEBUG_ALLOCATOR_PROTOTYPE = {
 
 Allocator*
 form_debug_allocator(Allocator *a) {
-	Allocator debug_a = DEBUG_ALLOCATOR_PROTOTYPE;
-
 	// these allocations are not tracked for obvious reasons
+	Allocator* debug_a = malloc(sizeof(Allocator));
 	DebugAllocatorCtx *ctx = a->alloc(a, sizeof(DebugAllocatorCtx));
-
 	Array *allocations = form_array(a, sizeof(DebugAllocationEntry));
+
 	size_t total_allocated = 0;
 	size_t total_freed = 0;
 
@@ -105,9 +105,11 @@ form_debug_allocator(Allocator *a) {
 		.total_allocated = total_allocated,
 		.total_freed = total_freed,
 
-
 		.print_allocations = debug_allocator_ctx_print_allocations
 	};
 
-	return a;
+	*debug_a = DEBUG_ALLOCATOR_PROTOTYPE;
+	debug_a->ctx = ctx;
+
+	return debug_a;
 }
