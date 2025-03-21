@@ -93,17 +93,14 @@ const Allocator DEBUG_ALLOCATOR_PROTOTYPE = {
 Allocator*
 form_debug_allocator(Allocator *a) {
 	// these allocations are not tracked for obvious reasons
-	Allocator* debug_a = malloc(sizeof(Allocator));
+	Allocator* debug_a = a->alloc(a, sizeof(Allocator));
 	DebugAllocatorCtx *ctx = a->alloc(a, sizeof(DebugAllocatorCtx));
-	Array *allocations = form_array(a, sizeof(DebugAllocationEntry));
-
-	size_t total_allocated = 0;
-	size_t total_freed = 0;
 
 	*ctx = (DebugAllocatorCtx) {
-		.allocations = allocations,
-		.total_allocated = total_allocated,
-		.total_freed = total_freed,
+		.a = a,
+		.allocations = form_array(a, sizeof(DebugAllocationEntry)),
+		.total_allocated = 0,
+		.total_freed = 0,
 
 		.print_allocations = debug_allocator_ctx_print_allocations
 	};

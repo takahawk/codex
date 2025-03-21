@@ -6,9 +6,9 @@
 typedef struct Allocator {
 	void *ctx;
 
-	void* (*const alloc)   (struct Allocator *self, size_t size);
-	void* (*const realloc) (struct Allocator *self, void *ptr, size_t size);
-	void  (*const free)    (struct Allocator *self, void *ptr); 
+	void* (*alloc)   (struct Allocator *self, size_t size);
+	void* (*realloc) (struct Allocator *self, void *ptr, size_t size);
+	void  (*free)    (struct Allocator *self, void *ptr); 
 
 } Allocator;
 
