@@ -4,7 +4,7 @@
 
 #include "testing/assert.h"
 
-#include "allocators/allocator.h"
+#include "allocators/debug_allocator.h"
 
 typedef struct {
 	uint16_t number;
@@ -43,11 +43,12 @@ compare_by_emulacrum(const void *a, const void *b) {
 }
 
 int main() {
-	Allocator all = std_allocator;
-	Array *arr = form_unsorted(&all);
-	Array *by_number = form_sorted_by_number(&all);
-	Array *by_original = form_sorted_by_original(&all);
-	Array *by_emulacrum = form_sorted_by_emulacrum(&all);
+	Allocator *all = form_debug_allocator(&std_allocator);
+	DebugAllocatorCtx *allocCtx = all->ctx;
+	Array *arr = form_unsorted(all);
+	Array *by_number = form_sorted_by_number(all);
+	Array *by_original = form_sorted_by_original(all);
+	Array *by_emulacrum = form_sorted_by_emulacrum(all);
 
 	assert_bool_equals(arr->equals(arr, by_number), false);
 	arr->sort(arr, compare_by_number);
@@ -60,6 +61,16 @@ int main() {
 	assert_bool_equals(arr->equals(arr, by_emulacrum), false);
 	arr->sort(arr, compare_by_emulacrum);
 	assert_bool_equals(arr->equals(arr, by_emulacrum), true);
+
+	arr->release(&arr);
+	by_number->release(&by_number);
+	by_original->release(&by_original);
+	by_emulacrum->release(&by_emulacrum);
+	
+	if (allocCtx->allocations->len != 0) {
+		allocCtx->print_allocations(allocCtx);
+		return -1;
+	}
 
 	return 0;
 }

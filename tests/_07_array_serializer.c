@@ -4,14 +4,25 @@
 #include <endian.h>
 #include <string.h>
 
-#include "allocators/allocator.h"
+#include "allocators/debug_allocator.h"
 #include "testing/assert.h"
 
 typedef struct {
+	Allocator *a;
+
 	uint16_t number;
 	char *original;
 	char *emulacrum;
 } EmulacrumTarot;
+
+static void
+emulacrum_tarot_serializer_release(Serializer **pself) {
+	Serializer *self = *pself;
+	Allocator *a = self->a;
+
+	a->free(a, self);
+	*pself = NULL;
+}
 
 static size_t
 emulacrum_tarot_serializer_estimate_size(Serializer *s, void *entity) {
@@ -45,24 +56,25 @@ emulacrum_tarot_serializer_serialize_to(Serializer *s, void *entity, uint8_t *bu
 
 static size_t
 emulacrum_tarot_serializer_deserialize_from(Serializer *s, uint8_t *buffer, void **entity) {
-	EmulacrumTarot *et = s->a->alloc(s->a, sizeof(EmulacrumTarot));
+	EmulacrumTarot et;
+	et.a = s->a;
 
 	size_t size = 0;
 	uint8_t *p = buffer;
-	memcpy(&et->number, p, sizeof(et->number));
-	et->number = be16toh(et->number);
-	p += sizeof(et->number);
-	size += sizeof(et->number);
+	memcpy(&et.number, p, sizeof(et.number));
+	et.number = be16toh(et.number);
+	p += sizeof(et.number);
+	size += sizeof(et.number);
 
-	size_t i = deserialize_string(s->a, p, &et->original);
+	size_t i = deserialize_string(s->a, p, &et.original);
 	p += i;
 	size += i;
 
-	i = deserialize_string(s->a, p, &et->emulacrum);
+	i = deserialize_string(s->a, p, &et.emulacrum);
 	p += i;
 	size += i;
 
-	*entity = et;
+	memcpy(*entity, &et, sizeof(EmulacrumTarot));
 
 	return size;
 }
@@ -75,27 +87,40 @@ Serializer *form_emulacrum_tarot_serializer(Allocator *all) {
 	s->estimate_size = emulacrum_tarot_serializer_estimate_size;
 	s->serialize_to = emulacrum_tarot_serializer_serialize_to;
 	s->deserialize_from = emulacrum_tarot_serializer_deserialize_from;
+	s->release = emulacrum_tarot_serializer_release;
 
 	return s;
 }
 
+static void
+emulacrum_tarot_release(void **pself) {
+	// TODO: maybe this function should be parameter of serializer
+	EmulacrumTarot self;
+	memcpy(&self, *pself, sizeof(EmulacrumTarot));
+	Allocator *a = self.a;
+
+	a->free(a, self.original);
+	a->free(a, self.emulacrum);
+}
 
 Array*/*EmulacrumTarot*/ form_test_array();
 
 int main() {
-	Allocator a = std_allocator;
-	Array *arr = form_test_array(&a);
-	Serializer *is = form_emulacrum_tarot_serializer(&a);
-	Serializer *s = arr->form_serializer(&a, is);
+	Allocator *a = form_debug_allocator(&std_allocator);
+	DebugAllocatorCtx *allocCtx = a->ctx;
+	Array *arr = form_test_array(a);
+	Serializer *is = form_emulacrum_tarot_serializer(a);
+	Serializer *s = arr->form_serializer(a, is);
 
 	size_t size = s->estimate_size(s, arr);
-	uint8_t *buf = a.alloc(&a, size);
+	uint8_t *buf = a->alloc(a, size);
 
 	s->serialize_to(s, arr, buf);
 
 	Array *arr2;
 
 	s->deserialize_from(s, buf, (void **) &arr2);
+	arr2->item_release = emulacrum_tarot_release;
 
 	assert_bool_equals(arr->len, arr2->len);
 	assert_bool_equals(arr->elem_size, arr2->elem_size);
@@ -107,7 +132,17 @@ int main() {
 		assert_str_equals(et->emulacrum, et2->emulacrum);
 	}
 
+	a->free(a, buf);
 	s->release(&s);
+	is->release(&is);
+
+	arr->release(&arr);
+	arr2->release(&arr2);
+
+	if (allocCtx->allocations->len != 0) {
+		allocCtx->print_allocations(allocCtx);
+		return -1;
+	}
 
 	return 0;
 }

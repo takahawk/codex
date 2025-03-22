@@ -1,7 +1,7 @@
 #include "ds/array.h"
 #include "testing/assert.h"
 
-#include "allocators/allocator.h"
+#include "allocators/debug_allocator.h"
 
 typedef struct {
 	uint16_t number;
@@ -16,13 +16,14 @@ Array*/*int*/            form_array_3(Allocator *a);
 
 
 int main() {
-	Allocator a = std_allocator;
-	Array *a1 = form_array_1(&a);
-	Array *a2 = form_array_2(&a);
-	Array *a3 = form_array_3(&a);
-	Array *a4 = form_array_1(&a);
-	Array *a5 = form_array_2(&a);
-	Array *a6 = form_array_3(&a);
+	Allocator *a = form_debug_allocator(&std_allocator);
+	DebugAllocatorCtx *allocCtx = a->ctx;
+	Array *a1 = form_array_1(a);
+	Array *a2 = form_array_2(a);
+	Array *a3 = form_array_3(a);
+	Array *a4 = form_array_1(a);
+	Array *a5 = form_array_2(a);
+	Array *a6 = form_array_3(a);
 
 	assert_bool_equals(a1->equals(a1, a1), true);
 	assert_bool_equals(a1->equals(a1, a2), false);
@@ -45,6 +46,11 @@ int main() {
 	a4->release(&a4);
 	a5->release(&a5);
 	a6->release(&a6);
+
+	if (allocCtx->allocations->len != 0) {
+		allocCtx->print_allocations(allocCtx);
+		return -1;
+	}
 
 	return 0;
 }

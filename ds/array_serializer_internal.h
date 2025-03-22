@@ -1,3 +1,4 @@
+#include <alloca.h>
 #include <endian.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -87,7 +88,7 @@ array_serializer_deserialize_from(Serializer *serializer, uint8_t *buffer, void 
 	Array *array = form_array(a, elem_size);
 
 	for (size_t i = 0; i < len; ++i) {
-		void *item;
+		void *item = alloca(elem_size);
 		size_t item_size = is->deserialize_from(is, p, &item);
 
 		array->add(array, item);
