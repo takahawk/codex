@@ -3,7 +3,7 @@
 #include <stdbool.h>
 #include <string.h>
 
-#include "allocators/allocator.h"
+#include "allocators/debug_allocator.h"
 #include "testing/assert.h"
 
 bool is_item_release_called[5];
@@ -16,9 +16,11 @@ item_release(int **pitem) {
 }
 
 int main() {
-	Allocator a = std_allocator;
+	Allocator *a = form_debug_allocator(&std_allocator);
+	DebugAllocatorCtx *allocCtx = a->ctx;
 	bzero(is_item_release_called, sizeof(bool) * 5);
-	Array *arr = form_array(&a, sizeof(int));
+	Array *arr = form_array(a, sizeof(int));
+	arr->item_release = (ArrayItemReleaseCb) item_release;
 	int x1 = 0, x2 = 1, x3 = 2, x4 = 3, x5 = 4;
 	arr->add(arr, &x1);
 	arr->add(arr, &x2);
@@ -26,12 +28,17 @@ int main() {
 	arr->add(arr, &x4);
 	arr->add(arr, &x5);
 
-	arr->item_release = (ArrayItemReleaseCb) item_release;
 
 	arr->release(&arr);
 
 	for (size_t i = 0; i < 5; ++i) {
 		assert_bool_equals(is_item_release_called[i], true);
+	}
+
+
+	if (allocCtx->allocations->len != 0) {
+		allocCtx->print_allocations(allocCtx);
+		return -1;
 	}
 
 	return 0;
