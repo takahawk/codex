@@ -12,5 +12,5 @@ typedef struct Allocator {
 
 } Allocator;
 
-Allocator form_std_allocator();
+extern const Allocator std_allocator;
 #endif
