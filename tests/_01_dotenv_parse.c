@@ -1,15 +1,17 @@
 #include <string.h>
 #include "allocators/allocator.h"
+#include "allocators/debug_allocator.h"
 #include "parsers/dotenv.h"
 #include "testing/assert.h"
 
 
 int main() {
-	Allocator a = form_std_allocator();
+	Allocator *a = form_debug_allocator(&std_allocator);
+	DebugAllocatorCtx *allocCtx = a->ctx;
 	char *buffer = "Zero=TheOne\n"
 				   "Architect=Galatea\n"
 				   "Simulation=Emulation";
-	Dotenv *dotenv = parse_dotenv(&a, buffer);
+	Dotenv *dotenv = parse_dotenv(a, buffer);
 
 	Array *keys = dotenv->keys;
 	Array *values = dotenv->values;
@@ -31,6 +33,13 @@ int main() {
 
 	value = *(char **) values->get(values, 2);
 	assert_str_equals(value, "Emulation");
+
+	dotenv->release(&dotenv);
+
+	if (allocCtx->allocations->len != 0) {
+		allocCtx->print_allocations(allocCtx);
+		return -1;
+	}
 
 	return 0;
 }

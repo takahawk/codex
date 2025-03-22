@@ -86,7 +86,7 @@ debug_allocator_ctx_print_allocations(DebugAllocatorCtx *ctx) {
 		DebugAllocationEntry *entry = al->get(al, i);
 		// start with 2, because first two lines are happening inside allocator
 		for (size_t j = 2; j < entry->stack_size; ++j) {
-			char cmd[1024];
+			char cmd[2048];
 			snprintf(cmd, sizeof(cmd), "addr2line -e %s %p", exe_path, entry->stack[j]);
 			FILE *fp = popen(cmd, "r");
 

@@ -7,6 +7,7 @@
 #include "../ds/array.h"
 
 typedef struct Dotenv {
+	Allocator *a;
 	// TODO: probably better to use trees... when we implement one in codex
 	Array/*char**/ *keys;
 	Array/*char**/ *values;

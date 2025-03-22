@@ -7,7 +7,7 @@
 
 
 int main() {
-	Allocator a = form_std_allocator();
+	Allocator a = std_allocator;
 	char *buffer = "Existence=true\n"
 				   "NonExistence=false\n";
 	Dotenv *dotenv = parse_dotenv(&a, buffer);

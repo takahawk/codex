@@ -83,7 +83,7 @@ Serializer *form_emulacrum_tarot_serializer(Allocator *all) {
 Array*/*EmulacrumTarot*/ form_test_array();
 
 int main() {
-	Allocator a = form_std_allocator();
+	Allocator a = std_allocator;
 	Array *arr = form_test_array(&a);
 	Serializer *is = form_emulacrum_tarot_serializer(&a);
 	Serializer *s = arr->form_serializer(&a, is);

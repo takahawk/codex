@@ -6,7 +6,7 @@
 
 
 int main() {
-	Allocator a = form_std_allocator();
+	Allocator a = std_allocator;
 	char *buffer = "Zero=TheOne\n"
 				   "Architect=Galatea\n"
 				   "Simulation=Emulation";

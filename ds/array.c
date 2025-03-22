@@ -4,8 +4,13 @@
 #include <stdlib.h>
 #include <string.h>
 
+
 #define ARRAY_BASE_CAP 10
 #define CAP_MULTIPLIER 2
+
+#define THEONE 1
+
+const ArrayItemReleaseCb JUST_FREE_IT = (ArrayItemReleaseCb) THEONE;
 
 static inline void
 array_release(Array **pself) {
@@ -24,7 +29,11 @@ array_release(Array **pself) {
 		void *maxp = p + (len * elem_size);
 		for (; p < maxp; p += elem_size) {
 			void *item = p;
-			self->item_release(&item);
+			if (JUST_FREE_IT == self->item_release) {
+				a->free(a, *(void **) item);
+			} else {
+				self->item_release(&item);
+			}
 		}
 	}
 	a->free(a, (*pself)->data);

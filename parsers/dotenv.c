@@ -6,14 +6,17 @@
 #include <stdlib.h>
 #include <string.h>
 
+
+
 static void
 dotenv_release(Dotenv **pself) {
 	Dotenv *self = *pself;
+	Allocator *a = self->a;
 	Array *keys = self->keys;
 	Array *values = self->values;
 	keys->release(&keys);
 	values->release(&values);
-	free(self);
+	a->free(a, self);
 	*pself = NULL;
 }
 
@@ -86,7 +89,9 @@ parse_dotenv(Allocator *a, const char *buffer) {
 	} state = STATE_KEY;
 
 	Array *keys = form_array(a, sizeof(char*));
+	keys->item_release = JUST_FREE_IT;
 	Array *values = form_array(a, sizeof(char*));
+	values->item_release = JUST_FREE_IT;
 	char c;
 
 	int i = 0;
@@ -139,6 +144,7 @@ parse_dotenv(Allocator *a, const char *buffer) {
 
 	Dotenv *env = a->alloc(a, sizeof(Dotenv));
 	*env = DOTENV_PROTOTYPE;
+	env->a = a;
 	env->keys = keys;
 	env->values = values;
 

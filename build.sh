@@ -5,6 +5,7 @@ SRCS="ds/array.c parsers/dotenv.c allocators/std_allocator.c allocators/debug_al
 OBJS=""
 LIBNAME=build/libcodex.a
 INCLUDE="-I./"
+CFLAGS="-Wno-discarded-qualifiers -Wno-format-truncation"
 
 set -x
 
@@ -16,8 +17,9 @@ mkdir -p build/allocators
 
 for src in $SRCS; do
 	obj="build/${src%.c}.o"
-	gcc -g -c "$src" -o "$obj" $INCLUDE
+	$CC $CFLAGS -g -c "$src" -o "$obj" $INCLUDE
 	OBJS="$OBJS $obj"
 done
 
+rm $LIBNAME
 ar rcs "$LIBNAME" $OBJS

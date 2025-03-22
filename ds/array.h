@@ -8,7 +8,11 @@
 #include "allocators/allocator.h"
 #include "encoding/serializer.h"
 
+
 typedef void (*ArrayItemReleaseCb) (void **item_ptr);
+
+// IMPORTANT NOTE: it is assumed that same allocator are used for elements
+extern const ArrayItemReleaseCb JUST_FREE_IT;
 
 typedef struct Array {
 	Allocator *a;

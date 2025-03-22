@@ -5,7 +5,7 @@
 
 
 int main() {
-	Allocator a = form_std_allocator();
+	Allocator a = std_allocator;
 	char *buffer = "TheStar=1337\n"
 				   "Feel=7331\n";
 	Dotenv *dotenv = parse_dotenv(&a, buffer);
