@@ -9,6 +9,9 @@ CFLAGS="-Wno-discarded-qualifiers -Wno-format-truncation"
 
 set -x
 
+# for includes
+ln -s . codex 
+
 mkdir -p build
 mkdir -p build/ds
 mkdir -p build/testing
@@ -20,6 +23,8 @@ for src in $SRCS; do
 	$CC $CFLAGS -g -c "$src" -o "$obj" $INCLUDE
 	OBJS="$OBJS $obj"
 done
+
+unlink codex
 
 rm $LIBNAME
 ar rcs "$LIBNAME" $OBJS

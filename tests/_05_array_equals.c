@@ -1,7 +1,7 @@
-#include "ds/array.h"
-#include "testing/assert.h"
+#include "codex/ds/array.h"
+#include "codex/testing/assert.h"
 
-#include "allocators/debug_allocator.h"
+#include "codex/allocators/debug_allocator.h"
 
 typedef struct {
 	uint16_t number;

@@ -1,4 +1,4 @@
-#include "debug_allocator.h"
+#include "codex/allocators/debug_allocator.h"
 
 #include <execinfo.h>
 #include <stdio.h>
@@ -6,7 +6,7 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "ds/array.h"
+#include "codex/ds/array.h"
 
 static void
 add_allocation_entry(Allocator *self, void *ptr, size_t size) {

@@ -1,10 +1,10 @@
-#include "ds/array.h"
+#include "codex/ds/array.h"
 
 #include <stdbool.h>
 #include <string.h>
 
-#include "allocators/debug_allocator.h"
-#include "testing/assert.h"
+#include "codex/allocators/debug_allocator.h"
+#include "codex/testing/assert.h"
 
 bool is_item_release_called[5];
 

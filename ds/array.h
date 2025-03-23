@@ -5,8 +5,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#include "allocators/allocator.h"
-#include "encoding/serializer.h"
+#include "codex/allocators/allocator.h"
+#include "codex/encoding/serializer.h"
 
 
 typedef void (*ArrayItemReleaseCb) (void **item_ptr);

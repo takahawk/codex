@@ -1,5 +1,5 @@
-#include "allocators/allocator.h"
-#include "ds/array.h"
+#include "codex/allocators/allocator.h"
+#include "codex/ds/array.h"
 
 typedef struct {
 	void *ptr;

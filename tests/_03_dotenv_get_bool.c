@@ -1,10 +1,10 @@
 #include <stdbool.h>
 #include <string.h>
 
-#include "allocators/allocator.h"
-#include "allocators/debug_allocator.h"
-#include "parsers/dotenv.h"
-#include "testing/assert.h"
+#include "codex/allocators/allocator.h"
+#include "codex/allocators/debug_allocator.h"
+#include "codex/parsers/dotenv.h"
+#include "codex/testing/assert.h"
 
 
 int main() {

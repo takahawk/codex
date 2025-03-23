@@ -3,8 +3,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include "allocators/allocator.h"
-#include "../ds/array.h"
+#include "codex/allocators/allocator.h"
+#include "codex/ds/array.h"
 
 typedef struct Dotenv {
 	Allocator *a;

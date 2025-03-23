@@ -7,6 +7,9 @@ TESTS=tests/*.c
 INCLUDE="-I./"
 CFLAGS="-Wno-discarded-qualifiers -Wno-format-truncation -no-pie"
 
+# for includes
+ln -s . codex 
+
 for test in $TESTS; do
 	echo "Running test $test..."
 	testbin="$test.bin"
@@ -19,3 +22,5 @@ for test in $TESTS; do
 		rm $testbin
 	fi
 done
+
+unlink codex

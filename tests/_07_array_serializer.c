@@ -1,11 +1,11 @@
-#include "ds/array.h"
-#include "encoding/serializer.h"
+#include "codex/ds/array.h"
+#include "codex/encoding/serializer.h"
 
 #include <endian.h>
 #include <string.h>
 
-#include "allocators/debug_allocator.h"
-#include "testing/assert.h"
+#include "codex/allocators/debug_allocator.h"
+#include "codex/testing/assert.h"
 
 typedef struct {
 	Allocator *a;

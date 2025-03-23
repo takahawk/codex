@@ -1,6 +1,6 @@
-#include "testing/assert.h"
-#include "allocators/debug_allocator.h"
-#include "ds/array.h"
+#include "codex/testing/assert.h"
+#include "codex/allocators/debug_allocator.h"
+#include "codex/ds/array.h"
 
 int main() {
 	Allocator *a = form_debug_allocator(&std_allocator);

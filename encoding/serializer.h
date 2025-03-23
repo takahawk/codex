@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "allocators/allocator.h"
+#include "codex/allocators/allocator.h"
 
 typedef struct Serializer {
 	Allocator *a;

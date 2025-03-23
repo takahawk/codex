@@ -1,9 +1,9 @@
 #include <stdbool.h>
 #include <string.h>
-#include "parsers/dotenv.h"
-#include "testing/assert.h"
+#include "codex/parsers/dotenv.h"
+#include "codex/testing/assert.h"
 
-#include "allocators/debug_allocator.h"
+#include "codex/allocators/debug_allocator.h"
 
 
 int main() {

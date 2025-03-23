@@ -1,10 +1,10 @@
-#include "ds/array.h"
+#include "codex/ds/array.h"
 
 #include <string.h>
 
-#include "testing/assert.h"
+#include "codex/testing/assert.h"
 
-#include "allocators/debug_allocator.h"
+#include "codex/allocators/debug_allocator.h"
 
 typedef struct {
 	uint16_t number;
@@ -66,7 +66,7 @@ int main() {
 	by_number->release(&by_number);
 	by_original->release(&by_original);
 	by_emulacrum->release(&by_emulacrum);
-	
+
 	if (allocCtx->allocations->len != 0) {
 		allocCtx->print_allocations(allocCtx);
 		return -1;
