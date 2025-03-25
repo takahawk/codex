@@ -18,35 +18,47 @@ _rb_tree_node_get(RBTreeNode *root, void *key, Comparator cmp) {
 }
 
 static void
-_rb_tree_left_rotate(RBTree *self, RBTreeNode *p, RBTreeNode *x) {
+_rb_tree_left_rotate(RBTree *self, RBTreeNode *x) {
 	RBTreeNode *y = x->right;
 	x->right = y->left;
+	if (y->left != NULL) {
+		y->left->p = x;
+	}
+
+	y->p = x->p;
 
 	if (self->root == x) {
 		self->root = y;
-	} else if (x == p->left) {
-		p->left = y;
+	} else if (x == x->p->left) {
+		x->p->left = y;
 	} else {
-		p->right = y;
+		x->p->right = y;
 	}
 
 	y->left = x;
+	x->p = y;
 }
 
 static void
-_rb_tree_right_rotate(RBTree *self, RBTreeNode *p, RBTreeNode *x) {
+_rb_tree_right_rotate(RBTree *self, RBTreeNode *x) {
 	RBTreeNode *y = x->left;
 	x->left = y->right;
+	if (NULL != y->right) {
+		y->right->p = x;
+	}
+
+	y->p = x->p;
 
 	if (self->root == x) {
 		self->root = y;
-	} else if (x == p->left) {
-		p->left = y;
+	} else if (x == x->p->left) {
+		x->p->left = y;
 	} else {
-		p->right = y;
+		x->p->right = y;
 	}
 
 	y->right = x;
+	x->p = y;
 }
 
 static RBTreeNode*
