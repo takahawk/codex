@@ -2,16 +2,8 @@
 
 #include <string.h>
 
-static int
-_default_comparator(const void *lhs, const void *rhs, void *ctx) {
-	size_t key_size;
-	memcpy(&key_size, &ctx, sizeof(key_size));
-	return memcmp(lhs, rhs, key_size);
-
-}
-
 static RBTreeNode*
-_rb_tree_node_get(RBTreeNode *root, void *key, RBComparator cmp) {
+_rb_tree_node_get(RBTreeNode *root, void *key, Comparator cmp) {
 	if (root == NULL)
 		return NULL;
 	size_t diff = cmp.cb(key, root->key, cmp.ctx);
@@ -53,9 +45,6 @@ rb_tree_release(RBTree **pself) {
 static RBTree RB_TREE_PROTOTYPE = {
 	.head   = NULL,
 
-	.comparator = (RBComparator) {
-		.cb = _default_comparator
-	},
 	.get    = rb_tree_get,
 	.remove = rb_tree_remove,
 	.add    = rb_tree_add,
@@ -63,14 +52,12 @@ static RBTree RB_TREE_PROTOTYPE = {
 	.release = rb_tree_release
 };
 
-RBTree* form_rb_tree(Allocator *a, size_t key_size) {
+RBTree* form_rb_tree(Allocator *a, Comparator comparator) {
 	RBTree *rb = a->alloc(a, sizeof(RBTree));
 
 	*rb = RB_TREE_PROTOTYPE;
 	rb->a = a;
-	rb->key_size = key_size;
-
-	memcpy(&rb->comparator.ctx, &key_size, sizeof(key_size));
+	rb->comparator = comparator;
 
 	return rb;
 }

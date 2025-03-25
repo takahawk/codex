@@ -42,7 +42,6 @@ typedef struct Array {
 
 extern const Array ARRAY_PROTOTYPE;
 
-// just pass NULL as item_release if you do not need that 
 Array* form_array(Allocator *a, size_t elem_size);
 
 #endif
