@@ -72,8 +72,51 @@ rb_tree_remove(RBTree *self, void *key) {
 }
 
 static void
-rb_tree_add(RBTree *self, void *key, void *satellite) {
-	// TODO: impl
+rb_tree_set(RBTree *self, void *key, void *value) {
+	Allocator *a = self->a;
+	Comparator cmp = self->comparator;
+
+
+	RBTreeNode *node = self->root;
+	RBTreeNode *p = NULL;
+
+	while (node != NULL) {
+		p = node;
+		int c = cmp.cb(key, node->key, cmp.ctx);
+		if (c == 0) {
+			// TODO: free prev value?
+			node->value = value;
+			return;
+		} else if (c < 0) {
+			node = node->left;
+		} else {
+			node = node->right;
+		}
+	}
+
+	RBTreeNode *newnode = a->alloc(a, sizeof(RBTreeNode));
+	newnode->key = key;
+	newnode->value = value;
+	newnode->left = NULL;
+	newnode->right = NULL;
+	newnode->p = p;
+
+	if (NULL == p) {
+		self->root = newnode;
+		newnode->is_red = false;
+		return;
+	}
+
+	int c = cmp.cb(newnode->key, p, cmp.ctx);
+	if (c > 0) {
+		p->right = newnode;
+	} else {
+		p->left = newnode;
+	}
+
+	p->is_red = true;
+
+	// TODO: fix the tree
 }
 
 static void
@@ -91,7 +134,7 @@ static RBTree RB_TREE_PROTOTYPE = {
 
 	.get    = rb_tree_get,
 	.remove = rb_tree_remove,
-	.add    = rb_tree_add,
+	.set    = rb_tree_set,
 
 	.release = rb_tree_release
 };

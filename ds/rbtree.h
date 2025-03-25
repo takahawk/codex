@@ -7,6 +7,7 @@
 
 typedef struct RBTreeNode RBTreeNode;
 typedef struct RBTreeNode {
+	bool is_red;
 	void *key;
 	void *value;
 
@@ -21,7 +22,7 @@ typedef struct RBTree {
 	RBTreeNode *root;
 	Comparator comparator;
 
-	void        (*add)    (RBTree *self, void *key, void *value);
+	void        (*set)    (RBTree *self, void *key, void *value);
 	RBTreeNode* (*get)    (RBTree *self, void *key);
 	bool        (*remove) (RBTree *self, void *key);
 
