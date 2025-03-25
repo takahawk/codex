@@ -17,7 +17,7 @@ typedef struct RBTreeNode {
 typedef struct RBTree RBTree;
 typedef struct RBTree {
 	Allocator  *a;
-	RBTreeNode *head;
+	RBTreeNode *root;
 	Comparator comparator;
 
 	void        (*add)    (RBTree *self, void *key, void *satellite);
