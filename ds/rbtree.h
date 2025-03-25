@@ -4,6 +4,11 @@
 
 #include "stdbool.h"
 
+typedef struct {
+	int (*cb) (const void *, const void*, void *ctx);
+	void *ctx;
+} RBComparator;
+
 typedef struct RBTreeNode RBTreeNode;
 typedef struct RBTreeNode {
 	void *key;
@@ -17,14 +22,15 @@ typedef struct RBTree RBTree;
 typedef struct RBTree {
 	Allocator  *a;
 	RBTreeNode *head;
-	// TODO: custom comparator?
+	size_t     key_size;
+	RBComparator comparator;
 
-	RBTreeNode* (*get)    (struct RBTree *self, void *key);
-	bool        (*remove) (struct RBTree *self, void *key);
-	void        (*add)    (struct RBTree *self, void *key, void *satellite);
+	void        (*add)    (RBTree *self, void *key, void *satellite);
+	RBTreeNode* (*get)    (RBTree *self, void *key);
+	bool        (*remove) (RBTree *self, void *key);
 
-	void        (*release) (struct RBTree **pself);
+	void        (*release) (RBTree **pself);
 } RBTree;
 
-RBTree *form_rbtree(Allocator *a);
+RBTree *form_rbtree(Allocator *a, size_t key_size);
 #endif
