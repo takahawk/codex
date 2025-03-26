@@ -3,6 +3,7 @@
 #include "codex/ds/rbtree.h"
 
 #include "codex/testing/assert.h"
+#include "rbtree.h"
 
 
 int main() {
@@ -64,6 +65,7 @@ int main() {
     	"PhantomKey"
 	};
 
+	assert_valid_rbtree(rb);
 	for (size_t i = 0; i < word_count; ++i) {
 		rb->set(rb, words[i], NULL);
 	}

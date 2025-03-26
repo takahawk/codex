@@ -33,6 +33,14 @@ assert_uint16_equals(uint16_t actual, uint16_t expected) {
 }
 
 static inline void
+assert_size_t_equals(size_t actual, size_t expected) {
+	if (actual != expected) {
+		fprintf(stderr, "assertion failed. actual=%lu expected=%lu\n", actual, expected);
+		exit(EXIT_FAILURE);
+	}
+}
+
+static inline void
 assert_null(void *ptr) {
 	if (NULL != ptr) {
 		fprintf(stderr, "assertion failed. pointer is not null\n");
