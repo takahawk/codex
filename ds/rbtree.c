@@ -201,12 +201,15 @@ rb_tree_release(RBTree **pself) {
 	*pself = NULL;
 }
 
+#include "codex/ds/rbtree_iter_internal.h"
+
 static RBTree RB_TREE_PROTOTYPE = {
 	.root   = NULL,
 
-	.get    = rb_tree_get,
-	.remove = rb_tree_remove,
-	.set    = rb_tree_set,
+	.get           = rb_tree_get,
+	.remove        = rb_tree_remove,
+	.set           = rb_tree_set,
+	.form_iterator = rb_tree_form_iterator,
 
 	.release = rb_tree_release
 };
