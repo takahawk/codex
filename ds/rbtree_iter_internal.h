@@ -4,7 +4,6 @@
 #include <stdlib.h>
 
 typedef struct {
-	Allocator           *a;
 	RBTreeNode          *node;
 } RBTreeIteratorCtx;
 
@@ -45,7 +44,6 @@ find_next(Iterator *self) {
 	// node->p->left == node
 	ctx->node = node->p;
 	return;
-
 }
 
 static void*
@@ -65,25 +63,18 @@ static void
 rbtree_iterator_release(Iterator **pself) {
 	Iterator *self = *pself;
 	RBTreeIteratorCtx *ctx = self->ctx;
-	Allocator *a = ctx->a;
+	Allocator *a = self->a;
 	a->free(a, self->ctx);
 	a->free(a, self);
 
 	*pself = NULL;
 }
 
-const Iterator RBTREE_ITER_PROTOTYPE = {
-	.has_next = rbtree_iterator_has_next,
-	.next = rbtree_iterator_next,
-	.release = rbtree_iterator_release
-};
-
 static Iterator*
 rb_tree_form_iterator(RBTree *self) {
 	Allocator *a = self->a;
 
 	RBTreeIteratorCtx *ctx = a->alloc(a, sizeof(RBTreeIteratorCtx));
-	ctx->a = a;
 	ctx->node = self->root;
 	if (NULL != ctx->node) {
 		while (ctx->node->left)
@@ -91,8 +82,12 @@ rb_tree_form_iterator(RBTree *self) {
 	}
 
 	Iterator *i = a->alloc(a, sizeof(Iterator));
-	*i = RBTREE_ITER_PROTOTYPE;
+	*i = ITERATOR_PROTOTYPE;
+	i->has_next = rbtree_iterator_has_next;
+	i->next = rbtree_iterator_next;
+	i->release = rbtree_iterator_release;
 	i->ctx = ctx;
+	i->a = a;
 
 	return i;
 }

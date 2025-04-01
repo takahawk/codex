@@ -22,11 +22,6 @@ rb_tree_get(RBTree *self, void *key) {
 	return _rb_tree_node_get(self->root, key, self->comparator);
 }
 
-static bool 
-rb_tree_remove(RBTree *self, void *key) {
-	// TODO: impl
-}
-
 static void
 _rb_tree_left_rotate(RBTree *self, RBTreeNode *x) {
 	RBTreeNode *y = x->right;
@@ -190,6 +185,54 @@ rb_tree_set(RBTree *self, void *key, void *value) {
 
 	self->root->is_red = false;
 }
+
+static void
+_rb_tree_transplant(RBTree *self, RBTreeNode *old, RBTreeNode *new) {
+	if (self->root == old) {
+		self->root = new;
+	} else if (old == old->p->left) {
+		old->p->left = new;
+	} else {
+		old->p->right = new;
+	}
+
+	new->p = old->p;
+}
+
+static RBTreeNode*
+_rb_tree_node_minimum(RBTreeNode *node) {
+	while (node->left)
+		node = node->left;
+
+	return node;
+}
+
+static bool 
+rb_tree_remove(RBTree *self, void *key) {
+	RBTreeNode *node = self->get(self, key);
+	if (NULL == node)
+		return false;
+
+	bool is_original_red = node->is_red;
+
+	RBTreeNode *xnode;
+	if (NULL == node->left) {
+		xnode = node->right;
+		_rb_tree_transplant(self, node, node->right);
+	} else if (NULL == node->right) {
+		xnode = node->left;
+		_rb_tree_transplant(self, node, node->left);
+	} else {
+		RBTreeNode *ynode = _rb_tree_node_minimum(node->right);
+		is_original_red = ynode->is_red;
+
+		if (ynode != node->right) {
+			// TODO:
+		}
+	}
+	// TODO: impl
+}
+
 
 static void
 rb_tree_release(RBTree **pself) {
