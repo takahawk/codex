@@ -9,4 +9,5 @@ typedef struct {
 
 extern const Comparator str_comparator;
 extern const Comparator uint16_comparator;
+extern const Comparator ptr_comparator;
 #endif

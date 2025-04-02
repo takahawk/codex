@@ -20,6 +20,16 @@ _uint16_comparator(const void *lhs, const void *rhs, void *ctx) {
 		return 0;
 }
 
+static int
+_ptr_comparator(const void *lhs, const void *rhs, void *ctx) {
+	if (lhs < rhs)
+		return -1;
+	else if (lhs > rhs)
+		return 1;
+
+	return 0;
+}
+
 const Comparator str_comparator = {
 	.cb = _str_comparator,
 	.ctx = NULL
@@ -27,5 +37,10 @@ const Comparator str_comparator = {
 
 const Comparator uint16_comparator = {
 	.cb = _uint16_comparator,
+	.ctx = NULL
+};
+
+const Comparator ptr_comparator = {
+	.cb = _ptr_comparator,
 	.ctx = NULL
 };
