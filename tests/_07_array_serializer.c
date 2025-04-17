@@ -106,7 +106,7 @@ emulacrum_tarot_release(void **pself) {
 Array*/*EmulacrumTarot*/ form_test_array();
 
 int main() {
-	Allocator *a = form_debug_allocator(&std_allocator);
+	Allocator *a = form_debug_allocator(&STD_ALLOCATOR);
 	DebugAllocatorCtx *allocCtx = a->ctx;
 	Array *arr = form_test_array(a);
 	Serializer *is = form_emulacrum_tarot_serializer(a);

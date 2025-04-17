@@ -15,7 +15,7 @@ item_release(int **pitem) {
 }
 
 int main() {
-	Allocator *a = form_debug_allocator(&std_allocator);
+	Allocator *a = form_debug_allocator(&STD_ALLOCATOR);
 	DebugAllocatorCtx *allocCtx = a->ctx;
 	bzero(is_item_release_called, sizeof(bool) * 5);
 	Array *arr = ARRAY.form(a, sizeof(int));

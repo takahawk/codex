@@ -37,7 +37,7 @@ std_allocator_free(Allocator *self, void *p) {
 	free(p);
 }
 
-const Allocator std_allocator = {
+const Allocator STD_ALLOCATOR = {
 	.ctx = NULL, // unused for std allocation
 
 	.alloc = std_allocator_alloc,

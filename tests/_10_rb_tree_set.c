@@ -7,7 +7,7 @@
 
 
 int main() {
-	Allocator *a = form_debug_allocator(&std_allocator);
+	Allocator *a = form_debug_allocator(&STD_ALLOCATOR);
 
 	RBTree/*char**/ *rb = form_rbtree(a, str_comparator);
 
@@ -54,7 +54,7 @@ int main() {
 	    "Tathata",
 	    "NoSelf"
 	};
-	
+
 	size_t excluded_word_count = 6;
 	char excluded_words[][16] = {
     	"GlitchSigil",

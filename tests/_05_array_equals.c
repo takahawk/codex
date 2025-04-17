@@ -16,7 +16,7 @@ Array*/*int*/            form_array_3(Allocator *a);
 
 
 int main() {
-	Allocator *a = form_debug_allocator(&std_allocator);
+	Allocator *a = form_debug_allocator(&STD_ALLOCATOR);
 	DebugAllocatorCtx *allocCtx = a->ctx;
 	Array *a1 = form_array_1(a);
 	Array *a2 = form_array_2(a);

@@ -3,7 +3,7 @@
 #include "codex/ds/array.h"
 
 int main() {
-	Allocator *a = form_debug_allocator(&std_allocator);
+	Allocator *a = form_debug_allocator(&STD_ALLOCATOR);
 	DebugAllocatorCtx *ctx = a->ctx;
 
 	int *p1 = a->alloc(a, sizeof(*p1));

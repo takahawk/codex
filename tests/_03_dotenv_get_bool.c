@@ -8,7 +8,7 @@
 
 
 int main() {
-	Allocator *a = form_debug_allocator(&std_allocator);
+	Allocator *a = form_debug_allocator(&STD_ALLOCATOR);
 	DebugAllocatorCtx *allocCtx = a->ctx;
 	char *buffer = "Existence=true\n"
 				   "NonExistence=false\n";

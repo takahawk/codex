@@ -7,7 +7,7 @@
 
 
 int main() {
-	Allocator *a = form_debug_allocator(&std_allocator);
+	Allocator *a = form_debug_allocator(&STD_ALLOCATOR);
 	DebugAllocatorCtx *allocCtx = a->ctx;
 	char *buffer = "TheStar=1337\n"
 				   "Feel=7331\n";

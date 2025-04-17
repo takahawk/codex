@@ -43,7 +43,7 @@ compare_by_emulacrum(const void *a, const void *b) {
 }
 
 int main() {
-	Allocator *all = form_debug_allocator(&std_allocator);
+	Allocator *all = form_debug_allocator(&STD_ALLOCATOR);
 	DebugAllocatorCtx *allocCtx = all->ctx;
 	Array *arr = form_unsorted(all);
 	Array *by_number = form_sorted_by_number(all);

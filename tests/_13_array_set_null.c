@@ -7,7 +7,7 @@
 #include "codex/testing/assert.h"
 
 int main() {
-	Allocator *a = form_debug_allocator(&std_allocator);
+	Allocator *a = form_debug_allocator(&STD_ALLOCATOR);
 	DebugAllocatorCtx *allocCtx = a->ctx;
 	Array *arr = ARRAY.form(a, sizeof(int));
 	int x1 = 0, x2 = 1, x3 = 2, x4 = 3, x5 = 4;
