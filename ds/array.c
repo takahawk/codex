@@ -48,7 +48,11 @@ array_set(Array *self, size_t i, void *pval) {
 		exit(EXIT_FAILURE);
 	}
 
-	memcpy(self->data + (i * self->elem_size), pval, self->elem_size);
+  void *ptr = self->data + (i * self->elem_size);
+  if (!pval)
+    bzero(ptr, self->elem_size);
+  else
+    memcpy(ptr, pval, self->elem_size);
 }
 
 static void
