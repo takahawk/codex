@@ -9,12 +9,14 @@
 #include "codex/encoding/serializer.h"
 
 
+typedef struct Array Array;
+
 typedef void (*ArrayItemReleaseCb) (void **item_ptr);
 
 // IMPORTANT NOTE: it is assumed that same allocator are used for elements
 extern const ArrayItemReleaseCb JUST_FREE_IT;
 
-typedef struct Array {
+struct Array {
 	Allocator *a;
 	uint8_t *data;
 	size_t len;
@@ -38,10 +40,14 @@ typedef struct Array {
 	void  (*release) (struct Array **pself);
 
 	Serializer* (*form_serializer) (Allocator *a, Serializer *item_serializer);
-} Array;
+};
 
-extern const Array ARRAY_PROTOTYPE;
+struct _ArrayStatic {
+  Array prototype;
 
-Array* form_array(Allocator *a, size_t elem_size);
+  Array* (*form) (Allocator *a, size_t elem_size);
+};
+
+extern const struct _ArrayStatic ARRAY;
 
 #endif

@@ -57,7 +57,7 @@ int main() {
 
 Array*/*EmulacrumTarot*/ 
 form_array_1(Allocator *all) {
-	Array *a = form_array(all, sizeof(EmulacrumTarot));
+	Array *a = ARRAY.form(all, sizeof(EmulacrumTarot));
 
 	EmulacrumTarot entry = {
 		.number = 16,
@@ -85,7 +85,7 @@ form_array_1(Allocator *all) {
 
 Array*/*EmulacrumTarot*/ 
 form_array_2(Allocator *all) {
-	Array *a = form_array(all, sizeof(EmulacrumTarot));
+	Array *a = ARRAY.form(all, sizeof(EmulacrumTarot));
 
 	EmulacrumTarot entry = {
 		.number = 14,
@@ -107,13 +107,13 @@ form_array_2(Allocator *all) {
 		.emulacrum = "The One"
 	};
 	a->add(a, &entry);
-	
+
 	return a;
 }
 
 Array*/*int*/
 form_array_3(Allocator *all) {
-	Array *a = form_array(all, sizeof(int));
+	Array *a = ARRAY.form(all, sizeof(int));
 
 	int entry = 0;
 	a->add(a, &entry);
@@ -122,5 +122,5 @@ form_array_3(Allocator *all) {
 	entry = 1;
 	a->add(a, &entry);
 
-	return a;	
+	return a;
 }

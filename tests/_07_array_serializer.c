@@ -149,7 +149,7 @@ int main() {
 
 Array*/*EmulacrumTarot*/ 
 form_test_array(Allocator *all) {
-	Array *a = form_array(all, sizeof(EmulacrumTarot));
+	Array *a = ARRAY.form(all, sizeof(EmulacrumTarot));
 
 	EmulacrumTarot entry = {
 		.number = 16,
@@ -171,7 +171,7 @@ form_test_array(Allocator *all) {
 		.emulacrum = "1337"
 	};
 	a->add(a, &entry);
-	
+
 	entry = (EmulacrumTarot) {
 		.number = 14,
 		.original = "Temperance",
@@ -193,5 +193,4 @@ form_test_array(Allocator *all) {
 	};
 	a->add(a, &entry);
 	return a;
-	
 }

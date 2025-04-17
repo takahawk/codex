@@ -85,7 +85,7 @@ array_serializer_deserialize_from(Serializer *serializer, uint8_t *buffer, void 
 		exit(EXIT_FAILURE);
 	}
 
-	Array *array = form_array(a, elem_size);
+	Array *array = ARRAY.form(a, elem_size);
 
 	for (size_t i = 0; i < len; ++i) {
 		void *item = alloca(elem_size);

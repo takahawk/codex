@@ -75,9 +75,9 @@ int main() {
 	return 0;
 }
 
-Array*/*EmulacrumTarot*/ 
+Array*/*EmulacrumTarot*/
 form_unsorted(Allocator *all) {
-	Array *a = form_array(all, sizeof(EmulacrumTarot));
+	Array *a = ARRAY.form(all, sizeof(EmulacrumTarot));
 
 	EmulacrumTarot entry = {
 		.number = 16,
@@ -99,7 +99,7 @@ form_unsorted(Allocator *all) {
 		.emulacrum = "1337"
 	};
 	a->add(a, &entry);
-	
+
 	entry = (EmulacrumTarot) {
 		.number = 14,
 		.original = "Temperance",
@@ -121,12 +121,12 @@ form_unsorted(Allocator *all) {
 	};
 	a->add(a, &entry);
 	return a;
-	
+
 }
 
-Array*/*EmulacrumTarot*/ 
+Array*/*EmulacrumTarot*/
 form_sorted_by_number(Allocator *all) {
-	Array *a = form_array(all, sizeof(EmulacrumTarot));
+	Array *a = ARRAY.form(all, sizeof(EmulacrumTarot));
 
 	EmulacrumTarot entry = (EmulacrumTarot) {
 		.number = 0,
@@ -169,11 +169,11 @@ form_sorted_by_number(Allocator *all) {
 		.emulacrum = "1337"
 	};
 	a->add(a, &entry);
-	
+
 	return a;
 }
 Array*/*EmulacrumTarot*/ form_sorted_by_original(Allocator *all) {
-	Array *a = form_array(all, sizeof(EmulacrumTarot));
+	Array *a = ARRAY.form(all, sizeof(EmulacrumTarot));
 
 	EmulacrumTarot entry = (EmulacrumTarot) {
 		.number = 2,
@@ -216,13 +216,13 @@ Array*/*EmulacrumTarot*/ form_sorted_by_original(Allocator *all) {
 		.emulacrum = "Fractura"
 	};
 	a->add(a, &entry);
-	
+
 	return a;
 }
 
 Array*/*EmulacrumTarot*/ 
 form_sorted_by_emulacrum(Allocator *all) {
-	Array *a = form_array(all, sizeof(EmulacrumTarot));
+	Array *a = ARRAY.form(all, sizeof(EmulacrumTarot));
 
 	EmulacrumTarot entry = (EmulacrumTarot) {
 		.number = 17,

@@ -107,29 +107,35 @@ array_sort(Array* self, int (*compar) (const void *, const void *)) {
 }
 
 #include "array_serializer_internal.h"
-const Array ARRAY_PROTOTYPE = {
-	.item_release = NULL,
-
-	.add = array_add,
-	.set = array_set,
-	.get = array_get,
-	.fremove = array_fast_remove,
-	.equals = array_equals,
-	.sort = array_sort,
-	.release = array_release,
-	.form_serializer = form_array_serializer
-};
 
 Array*
 form_array(Allocator *a, size_t elem_size) {
 	Array *arr = a->alloc(a, sizeof(Array));
-	*arr = ARRAY_PROTOTYPE;
+	*arr = ARRAY.prototype;
 
 	arr->a = a;
 	arr->elem_size = elem_size;
 	arr->len = 0;
 	arr->cap = ARRAY_BASE_CAP;
 	arr->data = a->alloc(a, elem_size * arr->cap);
-	
+
 	return arr;
 }
+
+const struct _ArrayStatic ARRAY = {
+  .prototype = {
+    .item_release = NULL,
+
+    .add = array_add,
+    .set = array_set,
+    .get = array_get,
+    .fremove = array_fast_remove,
+    .equals = array_equals,
+    .sort = array_sort,
+    .release = array_release,
+    .form_serializer = form_array_serializer
+  },
+
+  .form = form_array,
+};
+

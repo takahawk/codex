@@ -18,7 +18,7 @@ int main() {
 	Allocator *a = form_debug_allocator(&std_allocator);
 	DebugAllocatorCtx *allocCtx = a->ctx;
 	bzero(is_item_release_called, sizeof(bool) * 5);
-	Array *arr = form_array(a, sizeof(int));
+	Array *arr = ARRAY.form(a, sizeof(int));
 	arr->item_release = (ArrayItemReleaseCb) item_release;
 	int x1 = 0, x2 = 1, x3 = 2, x4 = 3, x5 = 4;
 	arr->add(arr, &x1);
