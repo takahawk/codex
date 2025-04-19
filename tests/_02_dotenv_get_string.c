@@ -1,7 +1,7 @@
 #include <string.h>
 
-#include "codex/allocators/allocator.h"
-#include "codex/allocators/debug_allocator.h"
+#include "codex/mem/allocator.h"
+#include "codex/mem/debug_allocator.h"
 #include "codex/parsers/dotenv.h"
 #include "codex/testing/assert.h"
 

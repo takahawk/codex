@@ -5,7 +5,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-#include "codex/allocators/allocator.h"
+#include "codex/mem/allocator.h"
 #include "codex/encoding/serializer.h"
 
 

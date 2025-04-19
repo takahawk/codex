@@ -8,7 +8,7 @@ typedef struct Allocator {
 
 	void* (*alloc)   (struct Allocator *self, size_t size);
 	void* (*realloc) (struct Allocator *self, void *ptr, size_t size);
-	void  (*free)    (struct Allocator *self, void *ptr); 
+	void  (*free)    (struct Allocator *self, void *ptr);
 
 } Allocator;
 

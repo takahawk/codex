@@ -1,6 +1,6 @@
 #ifndef CODEX_RBTREE_H_
 #define CODEX_RBTREE_H_
-#include "codex/allocators/allocator.h"
+#include "codex/mem/allocator.h"
 #include "codex/ds/comparator.h"
 #include "codex/ds/iterator.h"
 

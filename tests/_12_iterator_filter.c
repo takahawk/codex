@@ -1,4 +1,4 @@
-#include "codex/allocators/debug_allocator.h"
+#include "codex/mem/debug_allocator.h"
 #include "codex/ds/comparator.h"
 #include "codex/ds/rbtree.h"
 

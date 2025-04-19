@@ -2,7 +2,7 @@
 #define CODEX_ITERATOR
 #include <stdbool.h>
 
-#include "codex/allocators/allocator.h"
+#include "codex/mem/allocator.h"
 
 typedef bool (*FilterFunc) (void *x, void *ctx);
 

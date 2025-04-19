@@ -4,7 +4,7 @@
 #include <endian.h>
 #include <string.h>
 
-#include "codex/allocators/debug_allocator.h"
+#include "codex/mem/debug_allocator.h"
 #include "codex/testing/assert.h"
 
 typedef struct {

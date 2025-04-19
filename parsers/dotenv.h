@@ -3,7 +3,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include "codex/allocators/allocator.h"
+#include "codex/mem/allocator.h"
 #include "codex/ds/array.h"
 
 typedef struct Dotenv {

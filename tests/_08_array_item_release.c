@@ -3,7 +3,7 @@
 #include <stdbool.h>
 #include <string.h>
 
-#include "codex/allocators/debug_allocator.h"
+#include "codex/mem/debug_allocator.h"
 #include "codex/testing/assert.h"
 
 bool is_item_release_called[5];
