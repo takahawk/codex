@@ -1,6 +1,6 @@
 #ifndef CODEX_LIST_H_
 #define CODEX_LIST_H_
-#include "codex/allocators/allocator.h"
+#include "codex/mem/allocator.h"
 #include "codex/ds/comparator.h"
 
 /*

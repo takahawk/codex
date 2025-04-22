@@ -8,10 +8,6 @@
 #define ARRAY_BASE_CAP 10
 #define CAP_MULTIPLIER 2
 
-#define THEONE 1
-
-const ArrayItemReleaseCb JUST_FREE_IT = (ArrayItemReleaseCb) THEONE;
-
 static inline void
 array_release(Array **pself) {
 	Array *self = *pself;
@@ -21,23 +17,17 @@ array_release(Array **pself) {
 		exit(EXIT_FAILURE);
 	}
 
-	if (NULL != self->item_release) {
-		size_t len = self->len;
-		size_t elem_size = self->elem_size;
-		void *p = self->data;
+  size_t len = self->len;
+  size_t elem_size = self->elem_size;
+  void *p = self->data;
 
-		void *maxp = p + (len * elem_size);
-		for (; p < maxp; p += elem_size) {
-			void *item = p;
-			if (JUST_FREE_IT == self->item_release) {
-				a->free(a, *(void **) item);
-			} else {
-				self->item_release(&item);
-			}
-		}
-	}
-	a->free(a, (*pself)->data);
-	a->free(a, *pself);
+  void *maxp = p + (len * elem_size);
+  for (; p < maxp; p += elem_size) {
+    self->release_cb.cb(self->release_cb.a, p);
+  }
+
+	a->free(a, self->data);
+	a->free(a, self);
 	*pself = NULL;
 }
 
@@ -124,7 +114,6 @@ form_array(Allocator *a, size_t elem_size) {
 
 const struct _ArrayStatic ARRAY = {
   .prototype = {
-    .item_release = NULL,
 
     .add = array_add,
     .set = array_set,
@@ -133,7 +122,9 @@ const struct _ArrayStatic ARRAY = {
     .equals = array_equals,
     .sort = array_sort,
     .release = array_release,
-    .form_serializer = form_array_serializer
+    .form_serializer = form_array_serializer,
+
+    .release_cb = RELEASE_CB.nop,
   },
 
   .form = form_array,

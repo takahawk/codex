@@ -6,15 +6,11 @@
 #include <stdint.h>
 
 #include "codex/mem/allocator.h"
+#include "codex/mem/release_cb.h"
 #include "codex/encoding/serializer.h"
 
 
 typedef struct Array Array;
-
-typedef void (*ArrayItemReleaseCb) (void **item_ptr);
-
-// IMPORTANT NOTE: it is assumed that same allocator are used for elements
-extern const ArrayItemReleaseCb JUST_FREE_IT;
 
 struct Array {
 	Allocator *a;
@@ -22,22 +18,21 @@ struct Array {
 	size_t len;
 	size_t cap;
 	size_t elem_size;
-	// just set if needed. defaults (NULL) is no item release at all
-	ArrayItemReleaseCb item_release;
+	ReleaseCb release_cb;
 
 	// add value to array. pval is an address of value to be copied to the array
-	void  (*add)     (struct Array *self, void *pval);
-	void* (*get)     (struct Array *self, size_t i);
+	void  (*add)     (Array *self, void *pval);
+	void* (*get)     (Array *self, size_t i);
 	// sets value of array. value on pval address will be copied
-	void  (*set)     (struct Array *self, size_t i, void *pval);
+	void  (*set)     (Array *self, size_t i, void *pval);
 	// fast remove without preserving order - element is just replaced by last one
-	void  (*fremove) (struct Array *self, size_t i);
+	void  (*fremove) (Array *self, size_t i);
 
-	bool  (*equals)  (struct Array *self, struct Array *other);
+	bool  (*equals)  (Array *self, Array *other);
 
-	void  (*sort)    (struct Array *self, int (*compar) (const void*, const void*));
+	void  (*sort)    (Array *self, int (*compar) (const void*, const void*));
 
-	void  (*release) (struct Array **pself);
+	void  (*release) (Array **pself);
 
 	Serializer* (*form_serializer) (Allocator *a, Serializer *item_serializer);
 };

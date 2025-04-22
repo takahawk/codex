@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "codex/mem/release_cb.h"
+
 
 
 static void
@@ -89,9 +91,9 @@ parse_dotenv(Allocator *a, const char *buffer) {
 	} state = STATE_KEY;
 
 	Array *keys = ARRAY.form(a, sizeof(char*));
-	keys->item_release = JUST_FREE_IT;
+	keys->release_cb = RELEASE_CB.form_free_cb(a);
 	Array *values = ARRAY.form(a, sizeof(char*));
-	values->item_release = JUST_FREE_IT;
+	values->release_cb = RELEASE_CB.form_free_cb(a);
 	char c;
 
 	int i = 0;

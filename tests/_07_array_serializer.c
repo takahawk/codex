@@ -93,11 +93,9 @@ Serializer *form_emulacrum_tarot_serializer(Allocator *all) {
 }
 
 static void
-emulacrum_tarot_release(void **pself) {
+_emulacrum_tarot_release(Allocator *a, void **pself) {
 	// TODO: maybe this function should be parameter of serializer
-	EmulacrumTarot self;
-	memcpy(&self, *pself, sizeof(EmulacrumTarot));
-	Allocator *a = self.a;
+	EmulacrumTarot self = *(EmulacrumTarot *) pself;
 
 	a->free(a, self.original);
 	a->free(a, self.emulacrum);
@@ -120,7 +118,7 @@ int main() {
 	Array *arr2;
 
 	s->deserialize_from(s, buf, (void **) &arr2);
-	arr2->item_release = emulacrum_tarot_release;
+	arr2->release_cb = RELEASE_CB.form(a, _emulacrum_tarot_release);
 
 	assert_bool_equals(arr->len, arr2->len);
 	assert_bool_equals(arr->elem_size, arr2->elem_size);

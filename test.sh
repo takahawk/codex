@@ -16,6 +16,7 @@ for test in $TESTS; do
 	$CC $CFLAGS -no-pie -g -o "$testbin" $INCLUDE $test $LIBPATH $LIBS
 	if ! ./$testbin > /dev/null; then
 		echo "FAILURE"
+    unlink codex
 		exit 1
 	else
 		echo "SUCCESS"
