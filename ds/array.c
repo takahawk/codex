@@ -8,8 +8,8 @@
 #define ARRAY_BASE_CAP 10
 #define CAP_MULTIPLIER 2
 
-static inline void
-array_release(Array **pself) {
+static inline void array_release(Array **pself) 
+{
 	Array *self = *pself;
 	Allocator *a = self->a;
 	if (NULL == self) {
@@ -31,8 +31,8 @@ array_release(Array **pself) {
 	*pself = NULL;
 }
 
-static void
-array_set(Array *self, size_t i, void *pval) {
+static void array_set(Array *self, size_t i, void *pval)
+{
 	if (i >= self->len) {
 		fprintf(stderr, "index out of bounds (i=%ld array.len=%ld)\n", i, self->len);
 		exit(EXIT_FAILURE);
@@ -45,8 +45,8 @@ array_set(Array *self, size_t i, void *pval) {
     memcpy(ptr, pval, self->elem_size);
 }
 
-static void
-array_add(Array *self, void *pval) {
+static void array_add(Array *self, void *pval)
+{
 	if (self->len == self->cap) {
 		self->cap *= CAP_MULTIPLIER;
 		self->data = self->a->realloc(self->a, self->data, self->elem_size * self->cap);
@@ -56,8 +56,8 @@ array_add(Array *self, void *pval) {
 	array_set(self, self->len - 1, pval);
 }
 
-static void*
-array_get(Array *self, size_t i) {
+static void* array_get(Array *self, size_t i) 
+{
 	if (i >= self->len) {
 		printf("index out of bounds (i=%ld array.len=%ld)\n", i, self->len);
 		exit(EXIT_FAILURE);
@@ -65,8 +65,8 @@ array_get(Array *self, size_t i) {
 	return self->data + self->elem_size * i;
 }
 
-static void
-array_fast_remove(Array *self, size_t i) {
+static void array_fast_remove(Array *self, size_t i) 
+{
 	if (i >= self->len) {
 		fprintf(stderr, "index out of bounds (i=%ld array.len=%ld)\n", i, self->len);
 		exit(EXIT_FAILURE);
@@ -81,8 +81,8 @@ array_fast_remove(Array *self, size_t i) {
 	self->len--;
 }
 
-static bool
-array_equals(Array *self, Array *other) {
+static bool array_equals(Array *self, Array *other) 
+{
 	if (self->elem_size != other->elem_size)
 		return false;
 	if (self->len != other->len)
@@ -91,15 +91,15 @@ array_equals(Array *self, Array *other) {
 	return memcmp(self->data, other->data, self->elem_size * self->len) == 0;
 }
 
-static void
-array_sort(Array* self, int (*compar) (const void *, const void *)) {
+static void array_sort(Array* self, int (*compar) (const void *, const void *)) 
+{
 	qsort(self->data, self->len, self->elem_size, compar);
 }
 
 #include "array_serializer_internal.h"
 
-Array*
-form_array(Allocator *a, size_t elem_size) {
+Array* form_array(Allocator *a, size_t elem_size) 
+{
 	Array *arr = a->alloc(a, sizeof(Array));
 	*arr = ARRAY.prototype;
 
