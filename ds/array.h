@@ -41,6 +41,7 @@ struct _ArrayStatic {
   Array prototype;
 
   Array* (*form) (Allocator *a, size_t elem_size);
+  Array* (*copy) (Array *original);
 };
 
 extern const struct _ArrayStatic ARRAY;
