@@ -40,7 +40,8 @@ struct Array {
 struct _ArrayStatic {
   Array prototype;
 
-  Array* (*form) (Allocator *a, size_t elem_size);
+  Array* (*form) (size_t elem_size);
+  Array* (*form_with_allocator) (Allocator *a, size_t elem_size);
   Array* (*copy) (Array *original);
 };
 

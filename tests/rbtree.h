@@ -41,7 +41,7 @@ assert_valid_rbtree(RBTree *rb) {
 
 	it->release(&it);
 
-	Array/*size_t*/ *bhs = ARRAY.form(&STD_ALLOCATOR, sizeof(size_t));
+	Array/*size_t*/ *bhs = ARRAY.form_with_allocator(&STD_ALLOCATOR, sizeof(size_t));
 	_calculate_black_heights(rb->root, 0, bhs);
 
 	if (bhs->len != 0) {

@@ -147,7 +147,7 @@ int main() {
 
 Array*/*EmulacrumTarot*/ 
 form_test_array(Allocator *all) {
-	Array *a = ARRAY.form(all, sizeof(EmulacrumTarot));
+	Array *a = ARRAY.form_with_allocator(all, sizeof(EmulacrumTarot));
 
 	EmulacrumTarot entry = {
 		.number = 16,

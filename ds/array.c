@@ -98,7 +98,7 @@ static void sort(Array* self, int (*compar) (const void *, const void *))
 
 #include "array_serializer_internal.h"
 
-Array* form(Allocator *a, size_t elem_size) 
+Array* form_with_allocator(Allocator *a, size_t elem_size) 
 {
 	Array *arr = a->alloc(a, sizeof(Array));
 	*arr = ARRAY.prototype;
@@ -110,6 +110,11 @@ Array* form(Allocator *a, size_t elem_size)
 	arr->data = a->alloc(a, elem_size * arr->cap);
 
 	return arr;
+}
+
+Array* form(size_t elem_size) 
+{
+	return form_with_allocator(&STD_ALLOCATOR, elem_size);
 }
 
 Array* copy(Array *original)
@@ -144,6 +149,7 @@ const struct _ArrayStatic ARRAY = {
   },
 
   .form = form,
+  .form_with_allocator = form_with_allocator,
   .copy = copy,
 };
 

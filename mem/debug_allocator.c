@@ -116,7 +116,7 @@ form_debug_allocator(Allocator *a) {
 
 	*ctx = (DebugAllocatorCtx) {
 		.a = a,
-		.allocations = ARRAY.form(a, sizeof(DebugAllocationEntry)),
+		.allocations = ARRAY.form_with_allocator(a, sizeof(DebugAllocationEntry)),
 		.total_allocated = 0,
 		.total_freed = 0,
 

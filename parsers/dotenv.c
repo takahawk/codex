@@ -90,9 +90,9 @@ parse_dotenv(Allocator *a, const char *buffer) {
 		STATE_VALUE
 	} state = STATE_KEY;
 
-	Array *keys = ARRAY.form(a, sizeof(char*));
+	Array *keys = ARRAY.form_with_allocator(a, sizeof(char*));
 	keys->release_cb = RELEASE_CB.form_free_cb(a);
-	Array *values = ARRAY.form(a, sizeof(char*));
+	Array *values = ARRAY.form_with_allocator(a, sizeof(char*));
 	values->release_cb = RELEASE_CB.form_free_cb(a);
 	char c;
 

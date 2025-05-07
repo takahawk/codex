@@ -11,7 +11,7 @@ int main() {
 
 	assert_uint16_equals(ctx->allocations->len, 2);
 
-	Array *arr = ARRAY.form(a, sizeof(int));
+	Array *arr = ARRAY.form_with_allocator(a, sizeof(int));
 	assert_uint16_equals(ctx->allocations->len, 4);
 
 	arr->release(&arr);
