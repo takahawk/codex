@@ -49,5 +49,8 @@ echo "Python list (seconds): $cpu_time"
 cpu_time=$(pypy3 python_list.py $N)
 echo "Python list (PyPy) (seconds): $cpu_time"
 
+cpu_time=$(go run go_slices.go $N)
+echo "Go slice (seconds): $cpu_time"
+
 rm bnch.bin
 unlink codex
