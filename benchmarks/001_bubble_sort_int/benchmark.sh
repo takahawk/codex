@@ -6,7 +6,7 @@ CFLAGS="-Wno-discarded-qualifiers"
 
 ln -s ../../ codex 
 
-echo "CODEX ARRAY VS RAW ARRAY - BUBBLE SORT"
+echo "ARRAYS - BUBBLE SORT (INT ONLY)"
 echo "======================================"
 N=10000
 echo "N=$N"
