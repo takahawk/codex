@@ -43,21 +43,17 @@ $CC -O3 codex_array.c codex/ds/array.c codex/mem/std_allocator.c -o bnch.bin $IN
 cpu_time=$(./bnch.bin $N)
 echo "Codex array with -O3 (seconds): $cpu_time"
 
-$CC v2_array.c -o bnch.bin 
+$CC v2v_array.c -o bnch.bin 
 cpu_time=$(./bnch.bin $N)
 echo "V2 Codex array (seconds): $cpu_time"
 
-$CC -O1 v2_array.c -o bnch.bin 
+$CC -O1 v2v_array.c -o bnch.bin 
 cpu_time=$(./bnch.bin $N)
 echo "V2 Codex array with -O1 (seconds): $cpu_time"
 
-$CC -O2 v2_array.c -o bnch.bin 
+$CC -O1 v2v_array.c -o bnch.bin 
 cpu_time=$(./bnch.bin $N)
-echo "V2 Codex array with -O2 (seconds): $cpu_time"
-
-$CC -O3 v2_array.c -o bnch.bin 
-cpu_time=$(./bnch.bin $N)
-echo "V2 Codex array with -O3 (seconds): $cpu_time"
+echo "V2 Codex array with -O1 (seconds): $cpu_time"
 
 cpu_time=$(python3 -O python_list.py $N)
 echo "Python list (seconds): $cpu_time"
