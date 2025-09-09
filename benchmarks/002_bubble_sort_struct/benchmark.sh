@@ -29,19 +29,19 @@ echo "Raw array with -O3 (seconds): $cpu_time"
 
 $CC codex_array.c codex/ds/array.c codex/mem/std_allocator.c -o bnch.bin $INCLUDE $CFLAGS
 cpu_time=$(./bnch.bin $N)
-echo "Codex array (seconds): $cpu_time"
+echo "Old (V1) Codex array (seconds): $cpu_time"
 
 $CC codex_array.c codex/ds/array.c codex/mem/std_allocator.c -o bnch.bin $INCLUDE $CFLAGS
 cpu_time=$(./bnch.bin $N)
-echo "Codex array with boundary checks (seconds): $cpu_time"
+echo "Old (V1) Codex array with boundary checks (seconds): $cpu_time"
 
 $CC -O1 codex_array.c codex/ds/array.c codex/mem/std_allocator.c -o bnch.bin $INCLUDE $CFLAGS
 cpu_time=$(./bnch.bin $N)
-echo "Codex array with -O1 (seconds): $cpu_time"
+echo "Old (V1) Codex array with -O1 (seconds): $cpu_time"
 
 $CC -O2 codex_array.c codex/ds/array.c codex/mem/std_allocator.c -o bnch.bin $INCLUDE $CFLAGS
 cpu_time=$(./bnch.bin $N)
-echo "Codex array with -O2 (seconds): $cpu_time"
+echo "Old (V1) Codex array with -O2 (seconds): $cpu_time"
 
 $CC -O3 codex_array.c codex/ds/array.c codex/mem/std_allocator.c -o bnch.bin $INCLUDE $CFLAGS
 cpu_time=$(./bnch.bin $N)

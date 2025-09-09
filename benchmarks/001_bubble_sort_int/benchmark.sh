@@ -27,51 +27,51 @@ $CC -O3 raw_array.c -o bnch.bin
 cpu_time=$(./bnch.bin $N)
 echo "Raw array with -O3 (seconds): $cpu_time"
 
-$CC codex_array.c codex/ds/array.c codex/mem/std_allocator.c -o bnch.bin $INCLUDE $CFLAGS
+$CC codex_array.c codex/v1/ds/array.c codex/mem/std_allocator.c -o bnch.bin $INCLUDE $CFLAGS
+cpu_time=$(./bnch.bin $N)
+echo "Old (V1) Codex array (seconds): $cpu_time"
+
+$CC -O1 codex_v1_array.c codex/v1/ds/array.c codex/mem/std_allocator.c -o bnch.bin $INCLUDE $CFLAGS
+cpu_time=$(./bnch.bin $N)
+echo "Old (V1) Codex array with -O1 (seconds): $cpu_time"
+
+$CC -O2 codex_v1_array.c codex/v1/ds/array.c codex/mem/std_allocator.c -o bnch.bin $INCLUDE $CFLAGS
+cpu_time=$(./bnch.bin $N)
+echo "Old (V1) Codex array with -O2 (seconds): $cpu_time"
+
+$CC -O3 codex_v1_array.c codex/v1/ds/array.c codex/mem/std_allocator.c -o bnch.bin $INCLUDE $CFLAGS
+cpu_time=$(./bnch.bin $N)
+echo "Old (V1) Codex array with -O3 (seconds): $cpu_time"
+
+$CC codex_array.c -o bnch.bin 
 cpu_time=$(./bnch.bin $N)
 echo "Codex array (seconds): $cpu_time"
 
-$CC -O1 codex_array.c codex/ds/array.c codex/mem/std_allocator.c -o bnch.bin $INCLUDE $CFLAGS
+$CC -O1 codex_array.c -o bnch.bin 
 cpu_time=$(./bnch.bin $N)
 echo "Codex array with -O1 (seconds): $cpu_time"
 
-$CC -O2 codex_array.c codex/ds/array.c codex/mem/std_allocator.c -o bnch.bin $INCLUDE $CFLAGS
+$CC -O2 codex_array.c -o bnch.bin 
 cpu_time=$(./bnch.bin $N)
 echo "Codex array with -O2 (seconds): $cpu_time"
 
-$CC -O3 codex_array.c codex/ds/array.c codex/mem/std_allocator.c -o bnch.bin $INCLUDE $CFLAGS
+$CC -O3 codex_array.c -o bnch.bin 
 cpu_time=$(./bnch.bin $N)
 echo "Codex array with -O3 (seconds): $cpu_time"
 
-$CC v2_array.c -o bnch.bin 
+$CC -DCDX_DEFENSIVE codex_array.c -o bnch.bin 
 cpu_time=$(./bnch.bin $N)
-echo "V2 Codex array (seconds): $cpu_time"
+echo "Codex array - with boundary check (seconds): $cpu_time"
 
-$CC -O1 v2_array.c -o bnch.bin 
-cpu_time=$(./bnch.bin $N)
-echo "V2 Codex array with -O1 (seconds): $cpu_time"
-
-$CC -O2 v2_array.c -o bnch.bin 
-cpu_time=$(./bnch.bin $N)
-echo "V2 Codex array with -O2 (seconds): $cpu_time"
-
-$CC -O3 v2_array.c -o bnch.bin 
-cpu_time=$(./bnch.bin $N)
-echo "V2 Codex array with -O3 (seconds): $cpu_time"
-
-$CC -DCDX_DEFENSIVE v2_array.c -o bnch.bin 
-cpu_time=$(./bnch.bin $N)
-echo "V2 Codex array - with boundary check (seconds): $cpu_time"
-
-$CC -DCDX_DEFENSIVE -O1 v2_array.c -o bnch.bin 
+$CC -DCDX_DEFENSIVE -O1 codex_array.c -o bnch.bin 
 cpu_time=$(./bnch.bin $N)
 echo "V2 Codex array with -O1 (seconds): $cpu_time"
 
-$CC -DCDX_DEFENSIVE -O2 v2_array.c -o bnch.bin 
+$CC -DCDX_DEFENSIVE -O2 codex_array.c -o bnch.bin 
 cpu_time=$(./bnch.bin $N)
 echo "V2 Codex array with -O2 (seconds): $cpu_time"
 
-$CC -DCDX_DEFENSIVE -O3 v2_array.c -o bnch.bin 
+$CC -DCDX_DEFENSIVE -O3 codex_array.c -o bnch.bin 
 cpu_time=$(./bnch.bin $N)
 echo "V2 Codex array with -O3 (seconds): $cpu_time"
 

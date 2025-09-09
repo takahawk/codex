@@ -1,50 +1,75 @@
-#ifndef CODEX_ARRAY_H_
-#define CODEX_ARRAY_H_
+#ifndef CDX_ARRAY_H_
+#define CDX_ARRAY_H_
 
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdint.h>
+#define DEFAULT_CAP 10 
+#define CAP_MULTIPLIER 2
 
-#include "codex/mem/allocator.h"
-#include "codex/mem/release_cb.h"
-#include "codex/encoding/serializer.h"
+#ifdef CDX_DEFENSIVE
+  #define CDX_ARRAY_BOUNDS_CHECK 1
+#endif
 
+#ifdef CDX_ARRAY_BOUNDS_CHECK
+  #include <stdio.h>
+  #define CDX_BOUNDS_CHECK(a, i) \
+    do { \
+      if ((i) >= (a).len) { \
+        fprintf(stderr, "Index out of bounds %ld (len=%ld)", i, a.len); \
+        abort(); \
+      } \
+    } while(0);
+#else
+  #define CDX_BOUNDS_CHECK(arr, i) ((void) 0);
+#endif
 
-typedef struct Array Array;
+/* TODO: allocator */
+#include <stdlib.h>
+#include <string.h>
 
-struct Array {
-	Allocator *a;
-	uint8_t *data;
-	size_t len;
-	size_t cap;
-	size_t elem_size;
-	ReleaseCb release_cb;
+typedef struct {
+  void*  data;
+  size_t elem_size;
+  size_t capacity;
+  size_t len;
+} Array;
 
-	// add value to array. pval is an address of value to be copied to the array
-	void  (*add)     (Array *self, void *pval);
-	void* (*get)     (Array *self, size_t i);
-	// sets value of array. value on pval address will be copied
-	void  (*set)     (Array *self, size_t i, void *pval);
-	// fast remove without preserving order - element is just replaced by last one
-	void  (*fremove) (Array *self, size_t i);
+static inline Array cdx_array_form(size_t elem_size) {
+  size_t capacity = DEFAULT_CAP;
+  void *data = malloc(elem_size * capacity);
 
-	bool  (*equals)  (Array *self, Array *other);
+  Array array = {
+    .data      = data,
+    .elem_size = elem_size,
+    .capacity  = capacity,
+    .len       = 0,
+  };
 
-	void  (*sort)    (Array *self, int (*compar) (const void*, const void*));
+  return array;
+}
 
-	void  (*release) (Array **pself);
+static inline void* cdx_array_get(Array a, size_t i) {
+  CDX_BOUNDS_CHECK(a, i);
+  return (char *) a.data + (a.elem_size * i);
+}
 
-	Serializer* (*form_serializer) (Allocator *a, Serializer *item_serializer);
-};
+static inline void cdx_array_set(Array a, size_t i, void* dataptr) {
+  CDX_BOUNDS_CHECK(a, i);
+  memcpy((char *) a.data + (a.elem_size * i),
+         dataptr, 
+         a.elem_size);
+}
 
-struct _ArrayStatic {
-  Array prototype;
+static inline void cdx_array_add(Array *a, void* dataptr) {
+  if (a->capacity == a->len) {
+    a->capacity *= CAP_MULTIPLIER;
+    a->data = realloc(a->data, a->elem_size * a->capacity);
+  }
 
-  Array* (*form) (size_t elem_size);
-  Array* (*form_with_allocator) (Allocator *a, size_t elem_size);
-  Array* (*copy) (Array *original);
-};
+  a->len++;
+  cdx_array_set(*a, a->len - 1, dataptr);
+}
 
-extern const struct _ArrayStatic ARRAY;
+#undef DEFAULT_CAP
+#undef CAP_MULTIPLIER
+#undef CDX_BOUNDS_CHECK
 
 #endif

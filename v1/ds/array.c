@@ -1,4 +1,4 @@
-#include "codex/ds/array.h"
+#include "codex/v1/ds/array.h"
 
 #include <stdio.h>
 #include <stdlib.h>
