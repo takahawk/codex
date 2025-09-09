@@ -1,7 +1,8 @@
 #!/bin/sh
 
 CC=${CC:=gcc}
-SRCS="ds/array.c ds/rbtree.c ds/list.c ds/comparator.c ds/iterator.c parsers/dotenv.c mem/std_allocator.c mem/debug_allocator.c mem/rc.c"
+# parsers/dotenv.c mem/debug_allocator.c
+SRCS="ds/rbtree.c ds/list.c ds/comparator.c ds/iterator.c mem/std_allocator.c mem/rc.c"
 OBJS=""
 LIBNAME=build/libcodex.a
 INCLUDE="-I./"

@@ -24,6 +24,7 @@
 /* TODO: allocator */
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 typedef struct {
   void*  data;
@@ -66,6 +67,19 @@ static inline void cdx_array_add(Array *a, void* dataptr) {
 
   a->len++;
   cdx_array_set(*a, a->len - 1, dataptr);
+}
+
+static inline bool cdx_array_equals(Array a, Array b) {
+	if (a.elem_size != b.elem_size)
+		return false;
+	if (a.len != b.len)
+		return false;
+
+	return memcmp(a.data, b.data, a.elem_size * a.len) == 0;
+}
+
+static inline void cdx_array_release(Array *ptr) {
+  free(ptr->data);
 }
 
 #undef DEFAULT_CAP
