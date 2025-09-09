@@ -31,6 +31,10 @@ $CC codex_array.c codex/ds/array.c codex/mem/std_allocator.c -o bnch.bin $INCLUD
 cpu_time=$(./bnch.bin $N)
 echo "Codex array (seconds): $cpu_time"
 
+$CC codex_array.c codex/ds/array.c codex/mem/std_allocator.c -o bnch.bin $INCLUDE $CFLAGS
+cpu_time=$(./bnch.bin $N)
+echo "Codex array with boundary checks (seconds): $cpu_time"
+
 $CC -O1 codex_array.c codex/ds/array.c codex/mem/std_allocator.c -o bnch.bin $INCLUDE $CFLAGS
 cpu_time=$(./bnch.bin $N)
 echo "Codex array with -O1 (seconds): $cpu_time"

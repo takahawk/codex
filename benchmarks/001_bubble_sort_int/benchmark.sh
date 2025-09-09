@@ -59,6 +59,22 @@ $CC -O3 v2_array.c -o bnch.bin
 cpu_time=$(./bnch.bin $N)
 echo "V2 Codex array with -O3 (seconds): $cpu_time"
 
+$CC -DCDX_DEFENSIVE v2_array.c -o bnch.bin 
+cpu_time=$(./bnch.bin $N)
+echo "V2 Codex array - with boundary check (seconds): $cpu_time"
+
+$CC -DCDX_DEFENSIVE -O1 v2_array.c -o bnch.bin 
+cpu_time=$(./bnch.bin $N)
+echo "V2 Codex array with -O1 (seconds): $cpu_time"
+
+$CC -DCDX_DEFENSIVE -O2 v2_array.c -o bnch.bin 
+cpu_time=$(./bnch.bin $N)
+echo "V2 Codex array with -O2 (seconds): $cpu_time"
+
+$CC -DCDX_DEFENSIVE -O3 v2_array.c -o bnch.bin 
+cpu_time=$(./bnch.bin $N)
+echo "V2 Codex array with -O3 (seconds): $cpu_time"
+
 cpu_time=$(python3 -O python_list.py $N)
 echo "Python list (seconds): $cpu_time"
 

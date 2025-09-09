@@ -4,6 +4,10 @@
 #define DEFAULT_CAP 10 
 #define CAP_MULTIPLIER 2
 
+#ifdef CDX_DEFENSIVE
+  #define CDX_ARRAY_BOUNDS_CHECK 1
+#endif
+
 #ifdef CDX_ARRAY_BOUNDS_CHECK
   #include <stdio.h>
   #define CDX_BOUNDS_CHECK(a, i) \
