@@ -1,4 +1,3 @@
-#include "codex/mem/allocator.h"
 #include "codex/ds/array.h"
 
 typedef struct {
@@ -15,12 +14,7 @@ typedef struct DebugAllocatorCtx {
 	Allocator *a;
 
 	// TODO: optimize! trees, dude
-	Array*/*DebugAllocationEntry*/ allocations;
 
-	size_t total_allocated;
-	size_t total_freed;
-
-	void (*print_allocations) (struct DebugAllocatorCtx *ctx);
 } DebugAllocatorCtx;
 
 Allocator* form_debug_allocator(Allocator *a);
