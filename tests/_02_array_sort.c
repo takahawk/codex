@@ -13,10 +13,10 @@ typedef struct {
 
 } EmulacrumTarot;
 
-Array*/*EmulacrumTarot*/ form_unsorted(Allocator *all);
-Array*/*EmulacrumTarot*/ form_sorted_by_number(Allocator *all);
-Array*/*EmulacrumTarot*/ form_sorted_by_original(Allocator *all);
-Array*/*EmulacrumTarot*/ form_sorted_by_emulacrum(Allocator *all);
+Array/*EmulacrumTarot*/ form_unsorted();
+Array/*EmulacrumTarot*/ form_sorted_by_number();
+Array/*EmulacrumTarot*/ form_sorted_by_original();
+Array/*EmulacrumTarot*/ form_sorted_by_emulacrum();
 
 static int
 compare_by_number(const void *a, const void *b) {
@@ -43,228 +43,221 @@ compare_by_emulacrum(const void *a, const void *b) {
 }
 
 int main() {
-	Allocator *all = form_debug_allocator(&STD_ALLOCATOR);
-	DebugAllocatorCtx *allocCtx = all->ctx;
-	Array *arr = form_unsorted(all);
-	Array *by_number = form_sorted_by_number(all);
-	Array *by_original = form_sorted_by_original(all);
-	Array *by_emulacrum = form_sorted_by_emulacrum(all);
+	Array arr = form_unsorted();
+	Array by_number = form_sorted_by_number();
+	Array by_original = form_sorted_by_original();
+	Array by_emulacrum = form_sorted_by_emulacrum();
 
-	assert_bool_equals(arr->equals(arr, by_number), false);
-	arr->sort(arr, compare_by_number);
-	assert_bool_equals(arr->equals(arr, by_number), true);
+	assert_bool_equals(cdx_array_equals(arr, by_number), false);
+	cdx_array_sort(arr, compare_by_number);
+	assert_bool_equals(cdx_array_equals(arr, by_number), true);
 
-	assert_bool_equals(arr->equals(arr, by_original), false);
-	arr->sort(arr, compare_by_original);
-	assert_bool_equals(arr->equals(arr, by_original), true);
+	assert_bool_equals(cdx_array_equals(arr, by_original), false);
+	cdx_array_sort(arr, compare_by_original);
+	assert_bool_equals(cdx_array_equals(arr, by_original), true);
 
-	assert_bool_equals(arr->equals(arr, by_emulacrum), false);
-	arr->sort(arr, compare_by_emulacrum);
-	assert_bool_equals(arr->equals(arr, by_emulacrum), true);
+	assert_bool_equals(cdx_array_equals(arr, by_emulacrum), false);
+	cdx_array_sort(arr, compare_by_emulacrum);
+	assert_bool_equals(cdx_array_equals(arr, by_emulacrum), true);
 
-	arr->release(&arr);
-	by_number->release(&by_number);
-	by_original->release(&by_original);
-	by_emulacrum->release(&by_emulacrum);
-
-	if (allocCtx->allocations->len != 0) {
-		allocCtx->print_allocations(allocCtx);
-		return -1;
-	}
+	cdx_array_release(&arr);
+	cdx_array_release(&by_number);
+	cdx_array_release(&by_original);
+	cdx_array_release(&by_emulacrum);
 
 	return 0;
 }
 
-Array*/*EmulacrumTarot*/
-form_unsorted(Allocator *all) {
-	Array *a = ARRAY.form_with_allocator(all, sizeof(EmulacrumTarot));
+Array/*EmulacrumTarot*/
+form_unsorted() {
+	Array a = cdx_array_form(sizeof(EmulacrumTarot));
 
 	EmulacrumTarot entry = {
 		.number = 16,
 		.original = "The Tower",
 		.emulacrum = "Fractura"
 	};
-	a->add(a, &entry);
+	cdx_array_add(&a, &entry);
 
 	entry = (EmulacrumTarot) {
 		.number = 0,
 		.original = "The Fool",
 		.emulacrum = "Zero"
 	};
-	a->add(a, &entry);
+	cdx_array_add(&a, &entry);
 
 	entry = (EmulacrumTarot) {
 		.number = 17,
 		.original = "The Star",
 		.emulacrum = "1337"
 	};
-	a->add(a, &entry);
+	cdx_array_add(&a, &entry);
 
 	entry = (EmulacrumTarot) {
 		.number = 14,
 		.original = "Temperance",
 		.emulacrum = "Meridian"
 	};
-	a->add(a, &entry);
+	cdx_array_add(&a, &entry);
 
 	entry = (EmulacrumTarot) {
 		.number = 2,
 		.original = "High Priestess",
 		.emulacrum = "Reflexia Void"
 	};
-	a->add(a, &entry);
+	cdx_array_add(&a, &entry);
 
 	entry = (EmulacrumTarot) {
 		.number = 1,
 		.original = "The Magician",
 		.emulacrum = "The One"
 	};
-	a->add(a, &entry);
+	cdx_array_add(&a, &entry);
 	return a;
 
 }
 
-Array*/*EmulacrumTarot*/
-form_sorted_by_number(Allocator *all) {
-	Array *a = ARRAY.form_with_allocator(all, sizeof(EmulacrumTarot));
+Array/*EmulacrumTarot*/
+form_sorted_by_number() {
+	Array a = cdx_array_form(sizeof(EmulacrumTarot));
 
 	EmulacrumTarot entry = (EmulacrumTarot) {
 		.number = 0,
 		.original = "The Fool",
 		.emulacrum = "Zero"
 	};
-	a->add(a, &entry);
+	cdx_array_add(&a, &entry);
 
 	entry = (EmulacrumTarot) {
 		.number = 1,
 		.original = "The Magician",
 		.emulacrum = "The One"
 	};
-	a->add(a, &entry);
+	cdx_array_add(&a, &entry);
 
 	entry = (EmulacrumTarot) {
 		.number = 2,
 		.original = "High Priestess",
 		.emulacrum = "Reflexia Void"
 	};
-	a->add(a, &entry);
+	cdx_array_add(&a, &entry);
 
 	entry = (EmulacrumTarot) {
 		.number = 14,
 		.original = "Temperance",
 		.emulacrum = "Meridian"
 	};
-	a->add(a, &entry);
+	cdx_array_add(&a, &entry);
 
 	entry = (EmulacrumTarot) {
 		.number = 16,
 		.original = "The Tower",
 		.emulacrum = "Fractura"
 	};
-	a->add(a, &entry);
+	cdx_array_add(&a, &entry);
 
 	entry = (EmulacrumTarot) {
 		.number = 17,
 		.original = "The Star",
 		.emulacrum = "1337"
 	};
-	a->add(a, &entry);
+	cdx_array_add(&a, &entry);
 
 	return a;
 }
-Array*/*EmulacrumTarot*/ form_sorted_by_original(Allocator *all) {
-	Array *a = ARRAY.form_with_allocator(all, sizeof(EmulacrumTarot));
+Array/*EmulacrumTarot*/ form_sorted_by_original() {
+	Array a = cdx_array_form(sizeof(EmulacrumTarot));
 
 	EmulacrumTarot entry = (EmulacrumTarot) {
 		.number = 2,
 		.original = "High Priestess",
 		.emulacrum = "Reflexia Void"
 	};
-	a->add(a, &entry);
+	cdx_array_add(&a, &entry);
 
 	entry = (EmulacrumTarot) {
 		.number = 14,
 		.original = "Temperance",
 		.emulacrum = "Meridian"
 	};
-	a->add(a, &entry);
+	cdx_array_add(&a, &entry);
 
 	entry = (EmulacrumTarot) {
 		.number = 0,
 		.original = "The Fool",
 		.emulacrum = "Zero"
 	};
-	a->add(a, &entry);
+	cdx_array_add(&a, &entry);
 
 	entry = (EmulacrumTarot) {
 		.number = 1,
 		.original = "The Magician",
 		.emulacrum = "The One"
 	};
-	a->add(a, &entry);
+	cdx_array_add(&a, &entry);
 
 	entry = (EmulacrumTarot) {
 		.number = 17,
 		.original = "The Star",
 		.emulacrum = "1337"
 	};
-	a->add(a, &entry);
+	cdx_array_add(&a, &entry);
 
 	entry = (EmulacrumTarot) {
 		.number = 16,
 		.original = "The Tower",
 		.emulacrum = "Fractura"
 	};
-	a->add(a, &entry);
+	cdx_array_add(&a, &entry);
 
 	return a;
 }
 
-Array*/*EmulacrumTarot*/ 
-form_sorted_by_emulacrum(Allocator *all) {
-	Array *a = ARRAY.form_with_allocator(all, sizeof(EmulacrumTarot));
+Array/*EmulacrumTarot*/ 
+form_sorted_by_emulacrum() {
+	Array a = cdx_array_form(sizeof(EmulacrumTarot));
 
 	EmulacrumTarot entry = (EmulacrumTarot) {
 		.number = 17,
 		.original = "The Star",
 		.emulacrum = "1337"
 	};
-	a->add(a, &entry);
+	cdx_array_add(&a, &entry);
 
 	entry = (EmulacrumTarot) {
 		.number = 16,
 		.original = "The Tower",
 		.emulacrum = "Fractura"
 	};
-	a->add(a, &entry);
+	cdx_array_add(&a, &entry);
 
 	entry = (EmulacrumTarot) {
 		.number = 14,
 		.original = "Temperance",
 		.emulacrum = "Meridian"
 	};
-	a->add(a, &entry);
+	cdx_array_add(&a, &entry);
 
 	entry = (EmulacrumTarot) {
 		.number = 2,
 		.original = "High Priestess",
 		.emulacrum = "Reflexia Void"
 	};
-	a->add(a, &entry);
+	cdx_array_add(&a, &entry);
 
 	entry = (EmulacrumTarot) {
 		.number = 1,
 		.original = "The Magician",
 		.emulacrum = "The One"
 	};
-	a->add(a, &entry);
+	cdx_array_add(&a, &entry);
 
 	entry = (EmulacrumTarot) {
 		.number = 0,
 		.original = "The Fool",
 		.emulacrum = "Zero"
 	};
-	a->add(a, &entry);
+	cdx_array_add(&a, &entry);
 	
 	return a;
 }

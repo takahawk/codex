@@ -78,6 +78,10 @@ static inline bool cdx_array_equals(Array a, Array b) {
 	return memcmp(a.data, b.data, a.elem_size * a.len) == 0;
 }
 
+static inline void cdx_array_sort(Array a, int (*compar) (const void*, const void*)) {
+	qsort(a.data, a.len, a.elem_size, compar);
+}
+
 static inline void cdx_array_release(Array *ptr) {
   free(ptr->data);
 }
