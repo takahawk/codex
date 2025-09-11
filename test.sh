@@ -1,5 +1,6 @@
 #!/bin/sh
 
+# TODO: structure UTs by units (one for each header)
 CC=${CC:=gcc}
 LIBPATH="-L./build"
 LIBS="-lcodex"
