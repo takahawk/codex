@@ -1,5 +1,5 @@
-#ifndef CDX_DBG_ALLOCATOR
-#define CDX_DBG_ALLOCATOR
+#ifndef CDX_DBG_ALLOCATOR_H_
+#define CDX_DBG_ALLOCATOR_H_
 #include <execinfo.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,44 +14,48 @@ typedef struct {
 
 	void *stack[16];
 	int stack_size;
+} _CdxDbgAllocationEntry;
 
-} DebugAllocationEntry;
+typedef struct {
+  Array/*_CdxDbgAllocationEntry*/ allocations;
+  size_t total_allocated;
+  size_t total_freed;
+} CdxDbgAllocator;
 
-Array/*DebugAllocationEntry*/ _cdx_dbg_alloc_allocations;
-
-size_t _cdx_dbg_alloc_total_allocated = 0;
-size_t _cdx_dbg_alloc_total_freed = 0;
-
-static void cdx_dbg_allocator_init() {
-  _cdx_dbg_alloc_allocations = cdx_array_form(sizeof(DebugAllocationEntry));
+static inline CdxDbgAllocator cdx_dbg_allocator_form() {
+  return (CdxDbgAllocator) {
+    .allocations     = cdx_array_form(sizeof(_CdxDbgAllocationEntry)),
+    .total_allocated = 0,
+    .total_freed     = 0,
+  };
 }
 
-static void cdx_dbg_allocator_clean() {
-  cdx_array_release(&_cdx_dbg_alloc_allocations);
+static inline void cdx_dbg_allocator_release(CdxDbgAllocator *a) {
+  cdx_array_release(&a->allocations);
 }
 
-static void _cdx_dbg_allocator_add_entry(void *ptr, size_t size) {
+static void _cdx_dbg_allocator_add_entry(CdxDbgAllocator *a, void *ptr, size_t size) {
 	void *stack[16];
 	int stack_size = backtrace(stack, 16);
-	DebugAllocationEntry entry = {
+	_CdxDbgAllocationEntry entry = {
 		.ptr = ptr,
 		.size = size,
 		.stack_size = stack_size
 	};
 	memcpy(entry.stack, stack, sizeof(void*) * stack_size);
 
-	_cdx_dbg_alloc_total_allocated += size;
+	a->total_allocated += size;
 
-	cdx_array_add(&_cdx_dbg_alloc_allocations, &entry);
+	cdx_array_add(&(a->allocations), &entry);
 }
 
-static void inline _cdx_dbg_allocator_remove_entry(void *ptr) {
-	Array/*DebugAllocationEntry*/ *al = &_cdx_dbg_alloc_allocations;
+static void inline _cdx_dbg_allocator_remove_entry(CdxDbgAllocator *a, void *ptr) {
+	Array/*_CdxDbgAllocationEntry*/ *al = &(a->allocations);
 
 	for (size_t i = 0; i < al->len; ++i) {
-		DebugAllocationEntry *entry = cdx_array_get(*al, i);
+		_CdxDbgAllocationEntry *entry = cdx_array_get(*al, i);
 		if (entry->ptr == ptr) {
-			_cdx_dbg_alloc_total_freed += entry->size;
+			a->total_freed += entry->size;
 			cdx_array_fremove(al, i);
 			return;
 		}
@@ -60,35 +64,35 @@ static void inline _cdx_dbg_allocator_remove_entry(void *ptr) {
 	fprintf(stderr, "attempt to free non-allocated pointer: %p", ptr);
 }
 
-static inline void* cdx_dbg_allocator_alloc(size_t size) {
+static inline void* cdx_dbg_allocator_alloc(CdxDbgAllocator *a, size_t size) {
 	void* p = malloc(size);
-	_cdx_dbg_allocator_add_entry(p, size);
+	_cdx_dbg_allocator_add_entry(a, p, size);
 
 	return p;
 }
 
-static void* cdx_dbg_allocator_realloc(void *p, size_t size) {
-	_cdx_dbg_allocator_remove_entry(p);
+static void* cdx_dbg_allocator_realloc(CdxDbgAllocator *a, void *p, size_t size) {
+	_cdx_dbg_allocator_remove_entry(a, p);
 	p = realloc(p, size);
-	_cdx_dbg_allocator_add_entry(p, size);
+	_cdx_dbg_allocator_add_entry(a, p, size);
 
 	return p;
 }
 
 static void
-cdx_dbg_allocator_free(void *p) {
-	_cdx_dbg_allocator_remove_entry(p);
+cdx_dbg_allocator_free(CdxDbgAllocator *a, void *p) {
+	_cdx_dbg_allocator_remove_entry(a, p);
 	free(p);
 }
 
-static void cdx_dbg_allocator_print_allocations() {
-  Array *al = &_cdx_dbg_alloc_allocations;
+static void cdx_dbg_allocator_print_allocations(CdxDbgAllocator a) {
+  Array *al = &a.allocations;
 	char exe_path[1024];
 	readlink("/proc/self/exe", exe_path, sizeof(exe_path));
 	fprintf(stderr, "LIST OF ACTIVE ALLOCATIONS:\n");
   fprintf(stderr, "================================================\n\n");
 	for (size_t i = 0; i < al->len; ++i) {
-		DebugAllocationEntry *entry = cdx_array_get(*al, i);
+		_CdxDbgAllocationEntry *entry = cdx_array_get(*al, i);
 		// start with 2, because first two lines are happening inside allocator
 		for (size_t j = 2; j < entry->stack_size; ++j) {
 			char cmd[2048];
