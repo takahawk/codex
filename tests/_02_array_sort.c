@@ -4,8 +4,6 @@
 
 #include "codex/testing/assert.h"
 
-#include "codex/mem/debug_allocator.h"
-
 typedef struct {
 	uint16_t number;
 	char *original;
