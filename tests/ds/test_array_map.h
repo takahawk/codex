@@ -10,7 +10,7 @@ static bool test_add_get() {
   cdx_array_map_add(&map, "zero", "one");
   char *zero = cdx_array_map_get(map, "zero");
   // TODO: rework asserts
-  return strcmp(zero, "zero") == 0;
+  return strcmp(zero, "one") == 0;
 }
 
 CdxTestSuite ds_array_map = {

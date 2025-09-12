@@ -12,7 +12,7 @@ CFLAGS="-Wno-discarded-qualifiers -Wno-format-truncation -no-pie"
 ln -s . codex 
 
 # V2, TODO: make automatic runner for all files with CdxTestSuite 
-$CC tests/_00_test_suite_runner.c -o tests.bin $INCLUDE
+$CC tests/_00_test_suite_runner.c -g -o tests.bin $INCLUDE
 ./tests.bin
 
 for test in $TESTS; do

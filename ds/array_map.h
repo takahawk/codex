@@ -4,6 +4,7 @@
 #include "string.h"
 
 #include "codex/ds/array.h"
+#include "codex/cdx_string.h"
 
 /**
  * aka Poor Man's Hashmap. String keys
@@ -24,17 +25,22 @@ static inline ArrayMap cdx_array_map_form(size_t val_elem_size) {
   do {                                           \
     size_t keylen = strlen(key);                 \
     size_t vallen = strlen(value);               \
-/* TODO: add utility codex/string.h header for this common cases */ \
-    char *map_key = CDX_ALLOC(keylen + 2);       \
-    strcpy(map_key, key);                        \
-    char *map_value = CDX_ALLOC(vallen + 2);     \
-    strcpy(map_value, value);                    \
+    char *map_key = cdx_strdup(key);             \
     cdx_array_add(&(am)->keys, &map_key);        \
-    cdx_array_add(&(am)->values, &map_value);    \
+    cdx_array_add(&(am)->values, &value);        \
   } while(0);
 
 static inline void* cdx_array_map_get(ArrayMap am, char *key) {
   // TODO: _Generic get?
+  for (int i = 0; i < am.keys.len; i++) {
+    char *map_key = *(char **) cdx_array_get(am.keys, i);
+    if (strcmp(map_key, key) == 0) {
+      return cdx_array_get(am.values, i);
+    }
+  }
+  
+  // TODO: exit?
+  return NULL;
 }
 
 static inline void cdx_array_map_release(ArrayMap *am) {
