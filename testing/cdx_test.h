@@ -1,5 +1,5 @@
-#ifndef CDX_TEST_BASE_H_
-#define CDX_TEST_BASE_H_
+#ifndef CDX_TEST_H_
+#define CDX_TEST_H_
 #include <stdio.h>
 
 typedef bool (*CdxTestFunc)(void);
@@ -32,9 +32,9 @@ static void cdx_test_suite_run(CdxTestSuite suite) {
       succeeded++;
   }
 
-  printf("\tSUMMARY: %d out of %d succeeded\n\n", succeeded, total);
-
   // TODO: catch sigsegv?
+  printf("\tSUMMARY: %d out of %d succeeded\n\n", succeeded, total);
+  return succeeded == total;
 }
 
 #endif
