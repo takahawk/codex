@@ -11,6 +11,10 @@ CFLAGS="-Wno-discarded-qualifiers -Wno-format-truncation -no-pie"
 # for includes
 ln -s . codex 
 
+# V2, TODO: make automatic runner for all files with CdxTestSuite 
+$CC tests/_00_test_suite_runner.c -o tests.bin $INCLUDE
+./tests.bin
+
 for test in $TESTS; do
 	echo "Running test $test..."
 	testbin="$test.bin"
@@ -24,5 +28,6 @@ for test in $TESTS; do
 		rm $testbin
 	fi
 done
+
 
 unlink codex

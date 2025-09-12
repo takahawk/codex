@@ -5,7 +5,6 @@
 
 #include "codex/ds/array.h"
 
-
 /**
  * aka Poor Man's Hashmap. String keys
  */
@@ -30,13 +29,18 @@ static inline ArrayMap cdx_array_map_form(size_t val_elem_size) {
     strcpy(map_key, key);                        \
     char *map_value = CDX_ALLOC(vallen + 2);     \
     strcpy(map_value, value);                    \
-    cdx_array_add(am->keys, &key);               \
-    cdx_array_add(am->values, &value);           \
+    cdx_array_add(&(am)->keys, &map_key);        \
+    cdx_array_add(&(am)->values, &map_value);    \
   } while(0);
+
+static inline void* cdx_array_map_get(ArrayMap am, char *key) {
+  // TODO: _Generic get?
+}
 
 static inline void cdx_array_map_release(ArrayMap *am) {
   // TODO: free keys and values
-  cdx_array_release(am->keys);
-  cdx_array_release(am->values);
+  cdx_array_release(&am->keys);
+  cdx_array_release(&am->values);
 }
 
+#endif
